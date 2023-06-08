@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bars3Icon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   headerTabs: Tab[];
@@ -12,9 +12,26 @@ interface Props {
 
 export default function Header({ headerTabs }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollValue(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
-    <div className="w-full flex flex-row justify-between items-center border-b border-b-gray-100 px-4 lg:px-16 py-4">
+    <div
+      className={`w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white ${
+        scrollValue > 50 ? "px-8 lg:px-16" : "px-16 lg:px-24"
+      }`}
+    >
       <div
         id="header-logo"
         className="flex flex-row gap-4 items-center select-none"
