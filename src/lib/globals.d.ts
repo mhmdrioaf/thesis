@@ -3,3 +3,10 @@ type Tab = {
   route: string;
   id: string;
 };
+
+type CarouselAsset = {
+  id: string;
+  img: string;
+  title?: string;
+  desc?: string;
+};
