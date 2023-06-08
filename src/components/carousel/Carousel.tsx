@@ -32,7 +32,7 @@ export default function Carousel({ assets, autoplay = true }: Props) {
   }, [handleNextClick, autoplay]);
 
   return (
-    <div className="w-full h-64 lg:h-screen relative bg-black">
+    <div className="w-full h-64 lg:h-screen relative">
       <Image
         alt="Carousel Image"
         src={assets[activeImage].img}
