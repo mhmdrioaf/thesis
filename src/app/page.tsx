@@ -1,4 +1,5 @@
 import Carousel from "@/components/carousel/Carousel";
+import Speech from "@/components/speech/Speech";
 
 export default function Home() {
   const dummyCarouselAssets: CarouselAsset[] = [
@@ -25,6 +26,7 @@ export default function Home() {
   return (
     <main>
       <Carousel assets={dummyCarouselAssets} />
+      <Speech />
     </main>
   );
 }
