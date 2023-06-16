@@ -1,4 +1,6 @@
+import Card from "@/components/card/Card";
 import Carousel from "@/components/carousel/Carousel";
+import SectionTitle from "@/components/section-title/SectionTitle";
 import Speech from "@/components/speech/Speech";
 
 export default function Home() {
@@ -27,6 +29,19 @@ export default function Home() {
     <main>
       <Carousel assets={dummyCarouselAssets} />
       <Speech />
+      <div className="px-8 py-8 flex flex-col gap-8">
+        <SectionTitle title="Available Majors" />
+        <div className="grid grid-cols-2 gap-4 justify-between items-center">
+          {dummyCarouselAssets.map((carouselAsset: CarouselAsset) => (
+            <Card
+              key={carouselAsset.id}
+              img={carouselAsset.img}
+              title={carouselAsset.title ?? "Tidak ada nama"}
+              desc={carouselAsset.desc ?? "Tidak ada deskripsi"}
+            />
+          ))}
+        </div>
+      </div>
     </main>
   );
 }
