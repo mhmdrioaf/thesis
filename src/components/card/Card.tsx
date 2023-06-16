@@ -14,8 +14,8 @@ export default function Card({
       <div className="w-screen h-96 relative">
         <Image fill src={img} alt="Major" className="object-cover" />
       </div>
-      <div className="px-4 mb-4 flex flex-col gap-2">
-        <h3 className="text-xl font-bold">{title}</h3>
+      <div className="px-4 w-full mb-4 flex flex-col">
+        <h3 className="text-2xl font-bold">{title}</h3>
         <p>{desc}</p>
       </div>
     </div>
