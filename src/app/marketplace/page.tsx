@@ -23,7 +23,7 @@ export default function Marketplace() {
         {dummyProducts.map((product: Product) => (
           <Link key={product.id} href={`/marketplace/product/${product.id}`}>
             <Card>
-              <div className="w-full h-32 lg:h-64 relative">
+              <div className="w-full h-32 lg:h-64 relative rounded-b-lg overflow-hidden">
                 <Image
                   src={product.imgURL}
                   fill

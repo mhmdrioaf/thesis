@@ -8,7 +8,10 @@ import { DUMMY_HOME_CAROUSEL_ASSETS as dummyCarouselAssets } from "@/lib/constan
 export default function Home() {
   return (
     <main>
-      <Carousel assets={dummyCarouselAssets} className="h-64 lg:h-screen" />
+      <Carousel
+        assets={dummyCarouselAssets}
+        className="h-64 lg:h-screen rounded-b-xl overflow-hidden"
+      />
       <Speech />
       <Container className="flex flex-col gap-8">
         <SectionTitle title="Available Majors" />
