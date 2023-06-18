@@ -1,6 +1,14 @@
-export default function Card({ children }: { children: React.ReactNode }) {
+export default function Card({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="rounded-lg select-none cursor-pointer border border-gray-400 flex flex-col gap-4 relative items-center overflow-hidden">
+    <div
+      className={`rounded-lg select-none cursor-pointer border border-gray-400 flex flex-col gap-4 relative items-center overflow-hidden ${className}`}
+    >
       {children}
     </div>
   );
