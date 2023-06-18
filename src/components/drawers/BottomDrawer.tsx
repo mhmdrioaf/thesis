@@ -17,7 +17,7 @@ export default function BottomDrawer({
       }
       onClick={() => drawerState.setDrawerOpen(false)}
     >
-      <div className="w-full py-4 px-4 bg-white rounded-xl flex flex-col gap-2 fixed bottom-0 left-0">
+      <div className="w-full py-4 px-4 bg-white rounded-xl flex flex-col gap-2 absolute bottom-0 left-0">
         {tabs
           .filter((tab: Tab) => tab.element === undefined)
           .map((tab: Tab) => (
