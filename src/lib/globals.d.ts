@@ -12,6 +12,12 @@ type CarouselAsset = {
   desc?: string;
 };
 
+type SocialMedia = {
+  id: string;
+  url: string;
+  iconURL: string;
+};
+
 type GlobalStateContextType = {
   drawerState: {
     drawerOpen: boolean;
