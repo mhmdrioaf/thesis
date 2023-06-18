@@ -1,9 +1,10 @@
 import Image from "next/image";
 import SectionTitle from "../section-title/SectionTitle";
+import Container from "../container/Container";
 
 export default function Speech() {
   return (
-    <div className="px-8 py-8 w-full h-full flex flex-col gap-8">
+    <Container className="w-full h-full flex flex-col gap-8">
       <SectionTitle title="Sambutan Kepala Sekolah" />
       <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
         <div className="shrink-0">
@@ -50,6 +51,6 @@ export default function Speech() {
           </b>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

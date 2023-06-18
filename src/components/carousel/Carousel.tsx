@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useCallback, useEffect, useState } from "react";
+import Container from "../container/Container";
 
 interface Props {
   assets: CarouselAsset[];
@@ -44,7 +45,7 @@ export default function Carousel({ assets, autoplay = true }: Props) {
         <p className="font-bold text-2xl">{assets[activeImage]?.title}</p>
         <p className="font-normal text-md">{assets[activeImage]?.desc}</p>
       </div>
-      <div className="px-4 lg:px-16 absolute top-1/2 -translate-y-1/2 w-full flex flex-row justify-between">
+      <Container className="absolute top-1/2 -translate-y-1/2 w-full flex flex-row justify-between">
         <div
           className="px-2 py-2 bg-white opacity-50 text-primary rounded-md flex items-center justify-center cursor-pointer hover:opacity-100"
           onClick={() => handlePrevClick()}
@@ -57,7 +58,7 @@ export default function Carousel({ assets, autoplay = true }: Props) {
         >
           <ArrowRightIcon className="w-4 h-4" />
         </div>
-      </div>
+      </Container>
     </div>
   );
 }
