@@ -1,6 +1,8 @@
 import "@/app/globals.css";
-import { Open_Sans } from "next/font/google";
 import Header from "@/components/header/Header";
+import { HOME_TABS, MARKETPLACE_TABS } from "@/lib/constants";
+import { GlobalStateContextProvider } from "@/lib/contexts/GlobalState";
+import { Open_Sans } from "next/font/google";
 
 const open_sans = Open_Sans({ subsets: ["latin"] });
 
@@ -8,12 +10,6 @@ export const metadata = {
   title: "SMKS Korporasi Garut",
   description: "Official website of SMKS Korporasi Garut",
 };
-
-const tabs = [
-  { name: "Home", route: "/", id: "home" },
-  { name: "About", route: "/about", id: "about" },
-  { name: "Help", route: "/help", id: "help" },
-];
 
 export default function RootLayout({
   children,
@@ -23,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={open_sans.className}>
-        <Header headerTabs={tabs} />
-        {children}
+        <GlobalStateContextProvider>
+          <Header homeTabs={HOME_TABS} marketplaceTabs={MARKETPLACE_TABS} />
+          {children}
+        </GlobalStateContextProvider>
       </body>
     </html>
   );
