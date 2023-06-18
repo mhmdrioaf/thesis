@@ -33,7 +33,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   }, []);
   return (
     <div
-      className={`w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white ${
+      className={`w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white bg-opacity-95 backdrop-blur-md ${
         scrollValue > 50 ? "px-8 lg:px-16" : "px-16 lg:px-24"
       }`}
     >
