@@ -1,4 +1,4 @@
-import Card from "@/components/card/Card";
+import MajorCard from "@/components/card/MajorCard";
 import Carousel from "@/components/carousel/Carousel";
 import Container from "@/components/container/Container";
 import SectionTitle from "@/components/section-title/SectionTitle";
@@ -34,7 +34,7 @@ export default function Home() {
         <SectionTitle title="Available Majors" />
         <div className="grid grid-cols-2 gap-4 justify-between items-center">
           {dummyCarouselAssets.map((carouselAsset: CarouselAsset) => (
-            <Card
+            <MajorCard
               key={carouselAsset.id}
               img={carouselAsset.img}
               title={carouselAsset.title ?? "Tidak ada nama"}
