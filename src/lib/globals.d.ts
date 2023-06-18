@@ -1,7 +1,8 @@
 type Tab = {
-  name: string;
-  route: string;
-  id: string;
+  name?: string;
+  route?: string;
+  id?: string;
+  element?: ReactNode;
 };
 
 type CarouselAsset = {
@@ -9,4 +10,11 @@ type CarouselAsset = {
   img: string;
   title?: string;
   desc?: string;
+};
+
+type GlobalStateContextType = {
+  drawerState: {
+    drawerOpen: boolean;
+    setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 };
