@@ -24,3 +24,12 @@ type GlobalStateContextType = {
     setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   };
 };
+
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  imgURL: string;
+  category?: string;
+  desc?: string;
+};
