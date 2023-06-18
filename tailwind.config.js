@@ -10,6 +10,9 @@ module.exports = {
       colors: {
         primary: "#1f2943",
       },
+      transitionProperty: {
+        padding: "padding",
+      },
     },
   },
   plugins: [],
