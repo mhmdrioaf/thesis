@@ -1,4 +1,5 @@
 import "@/app/globals.css";
+import Footer from "@/components/footer/Footer";
 import Header from "@/components/header/Header";
 import { HOME_TABS, MARKETPLACE_TABS } from "@/lib/constants";
 import { GlobalStateContextProvider } from "@/lib/contexts/GlobalState";
@@ -22,6 +23,7 @@ export default function RootLayout({
         <GlobalStateContextProvider>
           <Header homeTabs={HOME_TABS} marketplaceTabs={MARKETPLACE_TABS} />
           {children}
+          <Footer />
         </GlobalStateContextProvider>
       </body>
     </html>
