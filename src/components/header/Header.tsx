@@ -34,7 +34,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   return (
     <div
       className={`w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white bg-opacity-95 backdrop-blur-md ${
-        scrollValue > 50 ? "px-8 lg:px-16" : "px-16 lg:px-24"
+        scrollValue > 50 ? "px-8 lg:px-16" : "px-10 lg:px-24"
       }`}
     >
       {pathname !== "/marketplace" && (
@@ -87,15 +87,8 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               alt="SMKS Korporasi Logo"
               width={64}
               height={64}
+              quality={75}
             />
-            <div id="header-logo-title" className="flex flex-col">
-              <p className="font-semibold text-xl text-primary">
-                SMKS Korporasi Garut
-              </p>
-              <p className="font-normal text-sm">
-                Yayasan Pendidikan Galeuh Pakuan
-              </p>
-            </div>
           </div>
           <NavButtons tabs={marketplaceTabs} />
           <CartButton onClick={() => console.log("hello")} />

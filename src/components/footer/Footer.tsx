@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <Container className="w-full grid grid-cols-2 border-t border-t-gray-100">
+    <Container className="w-full grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-0 border-t border-t-gray-100">
       <div className="flex flex-col gap-4">
         <div className="flex flex-row gap-4 items-center">
           <h3 className="text-2xl font-medium">SMKS Korporasi Garut</h3>

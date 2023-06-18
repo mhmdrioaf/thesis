@@ -19,11 +19,11 @@ export default function Marketplace() {
         autoplay={false}
       />
       <SectionTitle title="Featured Products" />
-      <div className="grid grid-cols-2 lg:grid-cols-4 w-full items-center gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 w-full items-center gap-2 lg:gap-8">
         {dummyProducts.map((product: Product) => (
           <Link key={product.id} href={`/marketplace/product/${product.id}`}>
             <Card>
-              <div className="w-full h-64 relative">
+              <div className="w-full h-32 lg:h-64 relative">
                 <Image
                   src={product.imgURL}
                   fill
@@ -31,7 +31,7 @@ export default function Marketplace() {
                   alt="Product"
                 />
               </div>
-              <div className="w-full px-4 py-4 flex flex-col gap-2">
+              <div className="w-full px-2 py-2 lg:px-4 lg:py-4 flex flex-col lg:gap-2">
                 <p className="text-xl">{product.name}</p>
                 <p className="truncate" title={product?.desc}>
                   {product?.desc}

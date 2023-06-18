@@ -12,7 +12,7 @@ export default function Home() {
       <Speech />
       <Container className="flex flex-col gap-8">
         <SectionTitle title="Available Majors" />
-        <div className="grid grid-cols-2 gap-4 justify-between items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 justify-between items-center">
           {dummyCarouselAssets.map((carouselAsset: CarouselAsset) => (
             <MajorCard
               key={carouselAsset.id}
