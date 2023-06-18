@@ -1,17 +1,22 @@
 "use client";
 
+import { useGlobalState } from "@/lib/contexts/GlobalState";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bars3Icon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
+import CartButton from "../buttons/CartButton";
+import Hamburger from "../buttons/Hamburger";
+import BottomDrawer from "../drawers/BottomDrawer";
+import NavButtons from "../navs/NavButtons";
+import NavLink from "../navs/NavLink";
 
 interface Props {
-  headerTabs: Tab[];
+  homeTabs: Tab[];
+  marketplaceTabs: Tab[];
 }
 
-export default function Header({ headerTabs }: Props) {
-  const [openDrawer, setOpenDrawer] = useState(false);
+export default function Header({ homeTabs, marketplaceTabs }: Props) {
+  const { drawerState } = useGlobalState();
   const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
 
@@ -32,74 +37,74 @@ export default function Header({ headerTabs }: Props) {
         scrollValue > 50 ? "px-8 lg:px-16" : "px-16 lg:px-24"
       }`}
     >
-      <div
-        id="header-logo"
-        className="flex flex-row gap-4 items-center select-none"
-      >
-        <Image
-          src="/smk_logo.png"
-          alt="SMKS Korporasi Logo"
-          width={64}
-          height={64}
-        />
-        <div id="header-logo-title" className="flex flex-col">
-          <p className="font-semibold text-xl text-primary">
-            SMKS Korporasi Garut
-          </p>
-          <p className="font-normal text-sm">
-            Yayasan Pendidikan Galeuh Pakuan
-          </p>
-        </div>
-      </div>
-      <div
-        id="header-nav"
-        className="hidden lg:flex flex-row gap-8 items-center"
-      >
-        {headerTabs.map((tab: Tab) => (
-          <Link
-            key={tab.id}
-            href={tab.route}
-            className={
-              pathname === tab.route
-                ? "font-normal text-normal no-underline text-neutral-950"
-                : "font-normal text-normal no-underline text-gray-400 hover:text-gray-900"
-            }
+      {pathname !== "/marketplace" && (
+        <>
+          <div
+            id="header-logo"
+            className="flex flex-row gap-4 items-center select-none"
           >
-            {tab.name}
-          </Link>
-        ))}
-      </div>
-      <div
-        id="header-menu"
-        className="block lg:hidden cursor-pointer"
-        onClick={() => setOpenDrawer((prev) => !prev)}
-      >
-        <Bars3Icon className="w-8 h-8 text-primary" />
-      </div>
-      <div
-        className={
-          openDrawer
-            ? "w-full h-screen fixed top-0 left-0 bg-black bg-opacity-30"
-            : "hidden"
-        }
-        onClick={() => setOpenDrawer(false)}
-      >
-        <div className="w-full py-4 px-4 bg-white rounded-xl flex flex-col gap-2 fixed bottom-0 left-0">
-          {headerTabs.map((tab: Tab) => (
-            <Link
-              href={tab.route}
-              key={tab.id}
-              className={
-                pathname === tab.route
-                  ? "w-full px-4 py-4 bg-primary text-white rounded-md hover:cursor-pointer"
-                  : "w-full px-4 py-4 text-neutral-950 rounded-md hover:cursor-pointer hover:bg-primary hover:text-white"
-              }
-            >
-              {tab.name}
-            </Link>
-          ))}
-        </div>
-      </div>
+            <Image
+              src="/smk_logo.png"
+              alt="SMKS Korporasi Logo"
+              width={64}
+              height={64}
+            />
+            <div id="header-logo-title" className="flex flex-col">
+              <p className="font-semibold text-xl text-primary">
+                SMKS Korporasi Garut
+              </p>
+              <p className="font-normal text-sm">
+                Yayasan Pendidikan Galeuh Pakuan
+              </p>
+            </div>
+          </div>
+          <NavLink
+            tabs={homeTabs.filter(
+              (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+            )}
+          />
+          <Hamburger
+            onClick={() => drawerState.setDrawerOpen((prev) => !prev)}
+          />
+        </>
+      )}
+      {pathname === "/marketplace" && (
+        <>
+          <NavLink
+            tabs={marketplaceTabs.filter(
+              (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+            )}
+          />
+          <Hamburger
+            onClick={() => drawerState.setDrawerOpen((prev) => !prev)}
+          />
+          <div
+            id="header-logo"
+            className="flex flex-row gap-4 items-center select-none"
+          >
+            <Image
+              src="/smk_logo.png"
+              alt="SMKS Korporasi Logo"
+              width={64}
+              height={64}
+            />
+            <div id="header-logo-title" className="flex flex-col">
+              <p className="font-semibold text-xl text-primary">
+                SMKS Korporasi Garut
+              </p>
+              <p className="font-normal text-sm">
+                Yayasan Pendidikan Galeuh Pakuan
+              </p>
+            </div>
+          </div>
+          <NavButtons tabs={marketplaceTabs} />
+          <CartButton onClick={() => console.log("hello")} />
+        </>
+      )}
+      <BottomDrawer
+        tabs={pathname === "/marketplace" ? marketplaceTabs : homeTabs}
+        drawerState={drawerState}
+      />
     </div>
   );
 }
