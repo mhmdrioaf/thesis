@@ -91,7 +91,6 @@ export default function AuthForm() {
       <button
         type="submit"
         className="w-full px-4 py-4 bg-primary text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md"
-        onClick={(event) => event.preventDefault}
       >
         Login
       </button>
