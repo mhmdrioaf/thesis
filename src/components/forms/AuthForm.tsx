@@ -1,9 +1,11 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import TextField from "../inputs/TextField";
 import TextDivider from "../dividers/TextDivider";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function AuthForm() {
   const [user, setUser] = useState<{ email: string; password: string }>({
@@ -11,6 +13,12 @@ export default function AuthForm() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState<{ status?: string; value?: string }>({
+    status: undefined,
+    value: undefined,
+  });
+
+  const router = useRouter();
 
   function inputChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     return setUser((prev) => ({
@@ -19,8 +27,38 @@ export default function AuthForm() {
     }));
   }
 
+  async function signInWithGoogleHandler(event: MouseEvent) {
+    event.preventDefault();
+    return await signIn("google");
+  }
+
+  async function signInWithCredentials(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    return await signIn("credentials", {
+      redirect: false,
+      username: user.email,
+      password: user.password,
+    })
+      .then((res) => {
+        if (!res?.ok) {
+          setMessage({
+            status: "error",
+            value:
+              "Login failed, please check your username/email or password.",
+          });
+        }
+        router.back();
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
   return (
-    <form className="w-full flex flex-col gap-4">
+    <form
+      className="w-full flex flex-col gap-4"
+      onSubmit={(event) => signInWithCredentials(event)}
+    >
       <label htmlFor="email" className="text-neutral-500">
         Email/username
       </label>
@@ -61,6 +99,13 @@ export default function AuthForm() {
         Login
       </button>
       <TextDivider text="OR" />
+      <button
+        type="button"
+        className="w-full px-4 py-4 bg-google text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md"
+        onClick={(event) => signInWithGoogleHandler(event)}
+      >
+        Login with Google
+      </button>
     </form>
   );
 }

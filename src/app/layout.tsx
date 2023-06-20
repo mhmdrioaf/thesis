@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import Footer from "@/components/footer/Footer";
 import Header from "@/components/header/Header";
+import AuthProvider from "@/lib/AuthProvider";
 import { HOME_TABS, MARKETPLACE_TABS } from "@/lib/constants";
 import { GlobalStateContextProvider } from "@/lib/contexts/GlobalState";
 import { Open_Sans } from "next/font/google";
@@ -21,9 +22,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={open_sans.className}>
         <GlobalStateContextProvider>
-          <Header homeTabs={HOME_TABS} marketplaceTabs={MARKETPLACE_TABS} />
-          {children}
-          <Footer />
+          <AuthProvider>
+            <Header homeTabs={HOME_TABS} marketplaceTabs={MARKETPLACE_TABS} />
+            {children}
+            <Footer />
+          </AuthProvider>
         </GlobalStateContextProvider>
       </body>
     </html>

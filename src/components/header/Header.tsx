@@ -9,6 +9,7 @@ import Hamburger from "../buttons/Hamburger";
 import BottomDrawer from "../drawers/BottomDrawer";
 import NavButtons from "../navs/NavButtons";
 import NavLink from "../navs/NavLink";
+import { useSession, signOut } from "next-auth/react";
 
 interface Props {
   homeTabs: Tab[];
@@ -17,6 +18,7 @@ interface Props {
 
 export default function Header({ homeTabs, marketplaceTabs }: Props) {
   const { drawerState } = useGlobalState();
+  const { data: session, status } = useSession();
   const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
 
@@ -90,7 +92,19 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               quality={75}
             />
           </div>
-          <NavButtons tabs={marketplaceTabs} />
+          <NavButtons
+            tabs={
+              status === "authenticated"
+                ? [
+                    {
+                      element: (
+                        <button onClick={() => signOut()}>Sign out</button>
+                      ),
+                    },
+                  ]
+                : marketplaceTabs
+            }
+          />
           <CartButton onClick={() => console.log("hello")} />
         </>
       )}
