@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import TextField from "../inputs/TextField";
 import TextDivider from "../dividers/TextDivider";
@@ -12,6 +12,10 @@ export default function AuthForm() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState<{ status?: string; value?: string }>({
+    status: undefined,
+    value: undefined,
+  });
 
   function inputChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     return setUser((prev) => ({
@@ -25,8 +29,32 @@ export default function AuthForm() {
     return await signIn("google");
   }
 
+  async function signInWithCredentials(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    return await signIn("credentials", {
+      redirect: false,
+      username: user.email,
+      password: user.password,
+    })
+      .then((res) => {
+        if (!res?.ok) {
+          setMessage({
+            status: "error",
+            value:
+              "Login failed, please check your username/email or password.",
+          });
+        }
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
   return (
-    <form className="w-full flex flex-col gap-4">
+    <form
+      className="w-full flex flex-col gap-4"
+      onSubmit={(event) => signInWithCredentials(event)}
+    >
       <label htmlFor="email" className="text-neutral-500">
         Email/username
       </label>
