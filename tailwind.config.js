@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         primary: "#1f2943",
+        google: "#DB4437",
       },
       transitionProperty: {
         padding: "padding",

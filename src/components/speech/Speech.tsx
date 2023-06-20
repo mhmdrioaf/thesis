@@ -4,7 +4,7 @@ import Container from "../container/Container";
 
 export default function Speech() {
   return (
-    <Container className="w-full h-full flex flex-col gap-8">
+    <Container className="w-full h-full flex flex-col gap-8 border-b border-b-gray-100">
       <SectionTitle title="Sambutan Kepala Sekolah" />
       <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
         <div className="shrink-0">

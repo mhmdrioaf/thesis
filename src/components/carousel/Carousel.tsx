@@ -8,9 +8,14 @@ import Container from "../container/Container";
 interface Props {
   assets: CarouselAsset[];
   autoplay?: boolean;
+  className?: string;
 }
 
-export default function Carousel({ assets, autoplay = true }: Props) {
+export default function Carousel({
+  assets,
+  autoplay = true,
+  className,
+}: Props) {
   const [activeImage, setActiveImage] = useState(0);
 
   const handlePrevClick = useCallback(() => {
@@ -33,7 +38,7 @@ export default function Carousel({ assets, autoplay = true }: Props) {
   }, [handleNextClick, autoplay]);
 
   return (
-    <div className="w-full h-64 lg:h-screen relative">
+    <div className={`w-full ${className} relative`}>
       <Image
         alt="Carousel Image"
         src={assets[activeImage].img}

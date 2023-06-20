@@ -10,8 +10,8 @@ export default function MajorCard({
   desc: string;
 }) {
   return (
-    <div className="w-full h-full rounded-lg select-none cursor-pointer border border-gray-400 flex flex-col gap-4 relative items-center overflow-hidden">
-      <div className="w-screen h-96 relative">
+    <div className="w-full h-full rounded-lg select-none cursor-pointer border border-gray-100 flex flex-col gap-4 relative items-center overflow-hidden">
+      <div className="w-full h-96 relative rounded-b-lg overflow-hidden">
         <Image fill src={img} alt="Major" className="object-cover" />
       </div>
       <div className="px-4 w-full mb-4 flex flex-col">
