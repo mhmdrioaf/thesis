@@ -33,3 +33,10 @@ type Product = {
   category?: string;
   desc?: string;
 };
+
+type NewUser = {
+  email: string;
+  username: string;
+  name: string;
+  password: string;
+};
