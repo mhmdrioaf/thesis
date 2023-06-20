@@ -5,6 +5,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import TextField from "../inputs/TextField";
 import TextDivider from "../dividers/TextDivider";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function AuthForm() {
   const [user, setUser] = useState<{ email: string; password: string }>({
@@ -16,6 +17,8 @@ export default function AuthForm() {
     status: undefined,
     value: undefined,
   });
+
+  const router = useRouter();
 
   function inputChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     return setUser((prev) => ({
@@ -44,6 +47,7 @@ export default function AuthForm() {
               "Login failed, please check your username/email or password.",
           });
         }
+        router.back();
       })
       .catch((e) => {
         throw new Error(e);
