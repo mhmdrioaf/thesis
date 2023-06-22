@@ -1,11 +1,10 @@
 "use client";
 
-import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
-import TextField from "../inputs/TextField";
-import TextDivider from "../dividers/TextDivider";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useState } from "react";
+import TextField from "../inputs/TextField";
 
 export default function AuthForm() {
   const [user, setUser] = useState<{ email: string; password: string }>({
@@ -25,11 +24,6 @@ export default function AuthForm() {
       ...prev,
       [event.target.name]: event.target.value,
     }));
-  }
-
-  async function signInWithGoogleHandler(event: MouseEvent) {
-    event.preventDefault();
-    return await signIn("google");
   }
 
   async function signInWithCredentials(event: FormEvent<HTMLFormElement>) {
@@ -97,14 +91,6 @@ export default function AuthForm() {
         className="w-full px-4 py-4 bg-primary text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md"
       >
         Login
-      </button>
-      <TextDivider text="OR" />
-      <button
-        type="button"
-        className="w-full px-4 py-4 bg-google text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md"
-        onClick={(event) => signInWithGoogleHandler(event)}
-      >
-        Login with Google
       </button>
     </form>
   );
