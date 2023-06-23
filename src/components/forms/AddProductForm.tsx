@@ -1,18 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TextField from "../inputs/TextField";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import supabase from "@/lib/supabase";
 
 export default function AddProductForm() {
   const [newProduct, setNewProduct] = useState<NewProduct | null>(null);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
   const labelStyles = "text-neutral-500";
   const inputStyles = "flex flex-col gap-2";
 
   const { data: session, status } = useSession();
   const router = useRouter();
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
   function inputChangeHandler(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -25,38 +31,89 @@ export default function AddProductForm() {
       : setNewProduct((prev) => ({ ...prev!, [dataName]: dataValue }));
   }
 
+  function onThumbnailInputClicked() {
+    if (thumbnailInputRef) {
+      return thumbnailInputRef.current?.click();
+    }
+  }
+
+  function onThumbnailInputChanged(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files;
+
+    if (!file) return;
+    setThumbnail(file[0]);
+  }
+
+  function getPublicImageURL(imagePath: string) {
+    return supabase.storage.from("products").getPublicUrl(imagePath).data
+      .publicUrl;
+  }
+
   async function onProductSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (session) {
-      const productToSubmit = {
+      const productWithoutThumbnail = {
         ...newProduct,
-        seller: session?.user.id,
+        seller: session.user.id,
       };
 
       try {
-        const productResponse = await fetch(
-          "http://localhost:3000/api/create-product",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(productToSubmit),
+        if (thumbnail) {
+          const fileName = `${newProduct?.name}_${session.user.id}/thumbnail/${newProduct?.name}_${session.user.id}_thumbnail`;
+          const { data, error } = await supabase.storage
+            .from("products")
+            .upload(fileName, thumbnail, {
+              upsert: true,
+            });
+
+          if (error) {
+            console.error(
+              "An error occurred while uploading the thumbnail: ",
+              error.cause
+            );
           }
-        );
 
-        if (!productResponse.ok) {
-          console.error(
-            "A problem occurred during uploading the product: ",
-            productResponse.status
-          );
+          if (data) {
+            const thumbnailURL = getPublicImageURL(data.path);
+            const productToSubmit = {
+              ...productWithoutThumbnail,
+              thumbnail: thumbnailURL,
+            };
+
+            const productResponse = await fetch(
+              "http://localhost:3000/api/create-product",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(productToSubmit),
+              }
+            );
+
+            if (!productResponse.ok) {
+              console.error(
+                "A problem occurred during uploading the product: ",
+                productResponse.status
+              );
+            } else {
+              router.push(
+                '/marketplace?status="Successfully added new product!"'
+              );
+            }
+          }
         }
-
-        router.push('/marketplace?status="Successfully added new product!"');
       } catch (error) {
         console.error("Unable to create the product: ", error);
       }
     }
   }
+
+  useEffect(() => {
+    if (thumbnail) {
+      const thumbnailPreviewURL = URL.createObjectURL(thumbnail);
+      setThumbnailPreview(thumbnailPreviewURL);
+    }
+  }, [thumbnail]);
 
   if (status === "loading") {
     return (
@@ -68,6 +125,37 @@ export default function AddProductForm() {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={onProductSubmit}>
+      <div className={inputStyles}>
+        <p className={labelStyles}>Product thumbnail</p>
+        <div
+          className="w-32 h-32 rounded-lg border border-gray-300 overflow-hidden grid place-items-center cursor-pointer relative"
+          onClick={onThumbnailInputClicked}
+        >
+          {!thumbnailPreview && (
+            <>
+              <PlusIcon className="w-8 h-8 text-gray-300" />
+              <input
+                ref={thumbnailInputRef}
+                type="file"
+                required
+                hidden
+                accept="image/*"
+                multiple={false}
+                onChange={onThumbnailInputChanged}
+              />
+            </>
+          )}
+          {thumbnailPreview && (
+            <Image
+              src={thumbnailPreview}
+              fill
+              alt="Product thumbnail"
+              className="object-cover"
+            />
+          )}
+        </div>
+      </div>
+
       <div className={inputStyles}>
         <label htmlFor="name" className={labelStyles}>
           Product name
