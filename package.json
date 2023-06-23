@@ -29,8 +29,8 @@
   },
   "devDependencies": {
     "@auth/prisma-adapter": "^1.0.0",
-    "@prisma/client": "^4.16.0",
+    "@prisma/client": "^4.16.1",
     "@types/bcrypt": "^5.0.0",
-    "prisma": "^4.16.0"
+    "prisma": "^4.16.1"
   }
 }
