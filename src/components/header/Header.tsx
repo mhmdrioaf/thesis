@@ -10,6 +10,7 @@ import BottomDrawer from "../drawers/BottomDrawer";
 import NavButtons from "../navs/NavButtons";
 import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
+import LoadingSpinner from "../indicators/LoadingSpinner";
 
 interface Props {
   homeTabs: Tab[];
@@ -21,8 +22,11 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   const { data: session, status } = useSession();
   const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
-
-  console.log(session);
+  const conditionalHeaderStyle =
+    scrollValue > 50 ? "px-8 lg:px-16" : "px-10 lg:px-24";
+  const headerStyle =
+    "w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white bg-opacity-95 backdrop-blur-md relative " +
+    conditionalHeaderStyle;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,16 +40,12 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
     };
   }, []);
   return (
-    <div
-      className={`w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white bg-opacity-95 backdrop-blur-md ${
-        scrollValue > 50 ? "px-8 lg:px-16" : "px-10 lg:px-24"
-      }`}
-    >
+    <div className={headerStyle}>
       {pathname !== "/marketplace" && (
         <>
           <div
             id="header-logo"
-            className="flex flex-row gap-4 items-center select-none"
+            className="w-full flex flex-row gap-4 items-center select-none"
           >
             <Image
               src="/smk_logo.png"
@@ -62,14 +62,16 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               </p>
             </div>
           </div>
-          <NavLink
-            tabs={homeTabs.filter(
-              (tab: Tab) => tab.id !== "login" && tab.id !== "register"
-            )}
-          />
-          <Hamburger
-            onClick={() => drawerState.setDrawerOpen((prev) => !prev)}
-          />
+          <div className="w-fit flex justify-end justify-self-end">
+            <NavLink
+              tabs={homeTabs.filter(
+                (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+              )}
+            />
+            <Hamburger
+              onClick={() => drawerState.setDrawerOpen((prev) => !prev)}
+            />
+          </div>
         </>
       )}
       {pathname === "/marketplace" && (
@@ -84,7 +86,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
           />
           <div
             id="header-logo"
-            className="flex flex-row gap-4 items-center select-none"
+            className="flex flex-row gap-4 items-center select-none justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           >
             <Image
               src="/smk_logo.png"
@@ -100,10 +102,20 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                 ? [
                     {
                       element: (
-                        <button key="signoutbutton" onClick={() => signOut()}>
+                        <button
+                          className="px-2 py-2"
+                          key="signoutbutton"
+                          onClick={() => signOut()}
+                        >
                           Sign out
                         </button>
                       ),
+                    },
+                  ]
+                : status === "loading"
+                ? [
+                    {
+                      element: <LoadingSpinner key="loading-spinner" />,
                     },
                   ]
                 : marketplaceTabs
