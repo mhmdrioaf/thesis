@@ -22,6 +22,8 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
 
+  console.log(session);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollValue(window.scrollY);
@@ -98,7 +100,9 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                 ? [
                     {
                       element: (
-                        <button onClick={() => signOut()}>Sign out</button>
+                        <button key="signoutbutton" onClick={() => signOut()}>
+                          Sign out
+                        </button>
                       ),
                     },
                   ]
