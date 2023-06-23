@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import TextField from "../inputs/TextField";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function AddProductForm() {
   const [newProduct, setNewProduct] = useState<NewProduct | null>(null);
@@ -11,6 +12,7 @@ export default function AddProductForm() {
   const inputStyles = "flex flex-col gap-2";
 
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   function inputChangeHandler(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,7 +28,34 @@ export default function AddProductForm() {
   async function onProductSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    console.log(newProduct);
+    if (session) {
+      const productToSubmit = {
+        ...newProduct,
+        seller: session?.user.id,
+      };
+
+      try {
+        const productResponse = await fetch(
+          "http://localhost:3000/api/create-product",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(productToSubmit),
+          }
+        );
+
+        if (!productResponse.ok) {
+          console.error(
+            "A problem occurred during uploading the product: ",
+            productResponse.status
+          );
+        }
+
+        router.push('/marketplace?status="Successfully added new product!"');
+      } catch (error) {
+        console.error("Unable to create the product: ", error);
+      }
+    }
   }
 
   if (status === "loading") {
