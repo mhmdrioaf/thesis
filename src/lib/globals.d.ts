@@ -34,6 +34,12 @@ type Product = {
   desc?: string;
 };
 
+type NewProduct = {
+  name: string;
+  description: string;
+  price: number;
+};
+
 type NewUser = {
   email: string;
   username: string;
