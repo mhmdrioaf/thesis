@@ -1,7 +1,11 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { AuthOptions } from "next-auth/core/types";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { db } from "./db";
+import { User } from "@prisma/client";
 
 export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
       credentials: {
@@ -28,4 +32,38 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      const dbUser = (await db.user.findFirst({
+        where: {
+          id: token.id,
+        },
+      })) as User | null;
+
+      if (!dbUser) {
+        token.id = user!.id;
+        return token;
+      }
+
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        image: dbUser.image,
+      };
+    },
+    async session({ session, token }) {
+      if (token) {
+        (session.user.id = token.id),
+          (session.user.email = token.email),
+          (session.user.name = token.name),
+          (session.user.image = token.picture);
+      }
+
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
 };
