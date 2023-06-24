@@ -5,6 +5,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "../inputs/TextField";
+import { ROUTES } from "@/lib/constants";
+import Snackbar from "../snackbars/Snackbar";
 
 export default function AuthForm() {
   const [user, setUser] = useState<{ email: string; password: string }>({
@@ -12,10 +14,11 @@ export default function AuthForm() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState<{ status?: string; value?: string }>({
-    status: undefined,
-    value: undefined,
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{
+    status?: string;
+    value?: string;
+  } | null>(null);
 
   const router = useRouter();
 
@@ -28,22 +31,27 @@ export default function AuthForm() {
 
   async function signInWithCredentials(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setMessage(null);
+    setIsLoading(true);
     return await signIn("credentials", {
       redirect: false,
       username: user.email,
       password: user.password,
     })
       .then((res) => {
-        if (!res?.ok) {
+        if (res?.error) {
           setMessage({
             status: "error",
             value:
               "Login failed, please check your username/email or password.",
           });
+          setIsLoading(false);
+        } else {
+          router.push(ROUTES.MARKETPLACE);
         }
-        router.back();
       })
       .catch((e) => {
+        setIsLoading(false);
         throw new Error(e);
       });
   }
@@ -53,6 +61,9 @@ export default function AuthForm() {
       className="w-full flex flex-col gap-4"
       onSubmit={(event) => signInWithCredentials(event)}
     >
+      {message && (
+        <Snackbar variant="ERROR" message={message.value!} autoHide />
+      )}
       <label htmlFor="email" className="text-neutral-500">
         Email/username
       </label>
@@ -62,6 +73,7 @@ export default function AuthForm() {
         name="email"
         type="text"
         onChange={(event) => inputChangeHandler(event)}
+        disabled={isLoading}
       />
       <label htmlFor="password" className="text-neutral-500">
         Password
@@ -74,6 +86,7 @@ export default function AuthForm() {
           type={showPassword ? "text" : "password"}
           className="border-none"
           onChange={(event) => inputChangeHandler(event)}
+          disabled={isLoading}
         />
         <div
           className="flex items-center justify-center px-2 py-2 cursor-pointer"
@@ -88,9 +101,11 @@ export default function AuthForm() {
       </div>
       <button
         type="submit"
-        className="w-full px-4 py-4 bg-primary text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md"
+        className="w-full px-4 py-4 bg-primary text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
+        disabled={isLoading}
       >
-        Login
+        {isLoading && "Logging in..."}
+        {!isLoading && "Login"}
       </button>
     </form>
   );

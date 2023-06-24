@@ -1,5 +1,6 @@
 import { AuthGroupButton } from "@/components/buttons/AuthButton";
 
+// Dummies data
 const socialMediaData = {
   facebook: {
     URL: "https://facebook.com/mr.r3v",
@@ -96,23 +97,6 @@ export const DUMMY_MARKETPLACE_PRODUCTS: Product[] = [
   },
 ];
 
-export const HOME_TABS: Tab[] = [
-  { id: "home", route: "/", name: "Home" },
-  { id: "about", route: "/about", name: "About" },
-  { id: "marketplace", route: "/marketplace", name: "Marketplace" },
-];
-
-export const MARKETPLACE_TABS: Tab[] = [
-  { id: "home", route: "/", name: "Home" },
-  { id: "marketplace", route: "/marketplace", name: "Marketplace" },
-  { id: "login", route: "/auth/login", name: "Login" },
-  { id: "register", route: "/auth/register", name: "Daftar" },
-  {
-    id: "buttons",
-    element: <AuthGroupButton />,
-  },
-];
-
 export const SOCIAL_MEDIA_LIST: SocialMedia[] = [
   {
     id: "facebook",
@@ -135,3 +119,47 @@ export const SOCIAL_MEDIA_LIST: SocialMedia[] = [
     url: socialMediaData.youtube.URL,
   },
 ];
+
+// routes
+export const ROUTES = {
+  HOME: "/",
+  MARKETPLACE: "/marketplace",
+  ABOUT: "/about",
+  PRODUCTS: {
+    CREATE: "/products/create",
+  },
+  AUTH: {
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+  },
+  PRODUCT_DETAIL: (productId: string | number) =>
+    `/marketplace/product/${productId}`,
+};
+
+// pages tabs
+export const HOME_TABS: Tab[] = [
+  { id: "home", route: ROUTES.HOME, name: "Home" },
+  { id: "about", route: ROUTES.ABOUT, name: "About" },
+  { id: "marketplace", route: ROUTES.MARKETPLACE, name: "Marketplace" },
+];
+
+export const MARKETPLACE_TABS: Tab[] = [
+  { id: "home", route: ROUTES.HOME, name: "Home" },
+  { id: "marketplace", route: ROUTES.MARKETPLACE, name: "Marketplace" },
+  { id: "login", route: ROUTES.AUTH.LOGIN, name: "Login" },
+  { id: "register", route: ROUTES.AUTH.REGISTER, name: "Daftar" },
+  {
+    id: "buttons",
+    element: <AuthGroupButton />,
+  },
+];
+
+// apis
+export const API_BASE_URL = "http://localhost:3000";
+export const API_AUTH = {
+  LOGIN: API_BASE_URL + "/api/auth/login",
+  REGISTER: API_BASE_URL + "/api/register",
+};
+export const API_PRODUCTS = {
+  CREATE: API_BASE_URL + "/api/create-product",
+};

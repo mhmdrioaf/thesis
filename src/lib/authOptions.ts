@@ -1,11 +1,15 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import type { AuthOptions } from "next-auth/core/types";
+import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./db";
-import { User } from "@prisma/client";
+import { API_AUTH, ROUTES } from "./constants";
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(db),
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     CredentialsProvider({
       credentials: {
@@ -13,32 +17,40 @@ export const authOptions: AuthOptions = {
         password: { type: "text" },
       },
       async authorize(credentials) {
-        const authResponse = await fetch(
-          "http://localhost:3000/api/auth/login",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
-          }
-        );
-
-        if (!authResponse.ok) {
-          return null;
-        }
+        const authResponse = await fetch(API_AUTH.LOGIN, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(credentials),
+        });
 
         const user = await authResponse.json();
 
-        return user;
+        if (authResponse.ok && user) {
+          return user;
+        }
+
+        return null;
       },
     }),
   ],
   callbacks: {
+    async session({ token, session }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.picture;
+      }
+
+      return session;
+    },
+
     async jwt({ token, user }) {
-      const dbUser = (await db.user.findFirst({
+      const dbUser = await db.user.findFirst({
         where: {
-          id: token.id,
+          email: token.email!,
         },
-      })) as User | null;
+      });
 
       if (!dbUser) {
         token.id = user!.id;
@@ -49,21 +61,12 @@ export const authOptions: AuthOptions = {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
-        image: dbUser.image,
+        picture: dbUser.image,
+        username: dbUser.username,
       };
     },
-    async session({ session, token }) {
-      if (token) {
-        (session.user.id = token.id),
-          (session.user.email = token.email),
-          (session.user.name = token.name),
-          (session.user.image = token.picture);
-      }
-
-      return session;
-    },
   },
-  session: {
-    strategy: "jwt",
+  pages: {
+    signIn: ROUTES.AUTH.LOGIN,
   },
 };

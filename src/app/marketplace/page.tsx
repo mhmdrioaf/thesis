@@ -3,6 +3,7 @@ import Carousel from "@/components/carousel/Carousel";
 import Container from "@/components/container/Container";
 import SectionTitle from "@/components/section-title/SectionTitle";
 import {
+  ROUTES,
   DUMMY_MARKETPLACE_CAROUSEL_ASSETS as dummyAssets,
   DUMMY_MARKETPLACE_PRODUCTS as dummyProducts,
 } from "@/lib/constants";
@@ -21,7 +22,7 @@ export default function Marketplace() {
       <SectionTitle title="Featured Products" />
       <div className="grid grid-cols-2 lg:grid-cols-4 w-full items-center gap-2 lg:gap-8">
         {dummyProducts.map((product: Product) => (
-          <Link key={product.id} href={`/marketplace/product/${product.id}`}>
+          <Link key={product.id} href={ROUTES.PRODUCT_DETAIL(product.id)}>
             <Card>
               <div className="w-full h-32 lg:h-64 relative rounded-b-lg overflow-hidden">
                 <Image

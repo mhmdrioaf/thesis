@@ -11,6 +11,7 @@ import NavButtons from "../navs/NavButtons";
 import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
+import { ROUTES } from "@/lib/constants";
 
 interface Props {
   homeTabs: Tab[];
@@ -18,10 +19,16 @@ interface Props {
 }
 
 export default function Header({ homeTabs, marketplaceTabs }: Props) {
-  const { drawerState } = useGlobalState();
-  const { data: session, status } = useSession();
   const [scrollValue, setScrollValue] = useState(0);
+
+  const { drawerState } = useGlobalState();
+  const { status } = useSession();
   const pathname = usePathname();
+
+  const marketplaceTabsWithoutAuth = marketplaceTabs.filter(
+    (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+  );
+
   const conditionalHeaderStyle =
     scrollValue > 50 ? "px-8 lg:px-16" : "px-10 lg:px-24";
   const headerStyle =
@@ -41,7 +48,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   }, []);
   return (
     <div className={headerStyle}>
-      {pathname !== "/marketplace" && (
+      {pathname !== ROUTES.MARKETPLACE && (
         <>
           <div
             id="header-logo"
@@ -74,7 +81,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
           </div>
         </>
       )}
-      {pathname === "/marketplace" && (
+      {pathname === ROUTES.MARKETPLACE && (
         <>
           <NavLink
             tabs={marketplaceTabs.filter(
@@ -125,7 +132,29 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
         </>
       )}
       <BottomDrawer
-        tabs={pathname === "/marketplace" ? marketplaceTabs : homeTabs}
+        tabs={
+          pathname === ROUTES.MARKETPLACE
+            ? status === "authenticated"
+              ? [
+                  ...marketplaceTabsWithoutAuth,
+                  {
+                    element: (
+                      <button
+                        className="w-full px-2 py-2 bg-red-950 text-white"
+                        onClick={() => signOut()}
+                      >
+                        Sign out
+                      </button>
+                    ),
+                  },
+                ]
+              : marketplaceTabs
+            : status === "authenticated"
+            ? homeTabs.filter(
+                (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+              )
+            : homeTabs
+        }
         drawerState={drawerState}
       />
     </div>
