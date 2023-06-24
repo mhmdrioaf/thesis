@@ -3,7 +3,7 @@ import type { AuthOptions } from "next-auth/core/types";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./db";
 import { User } from "@prisma/client";
-import { API_AUTH, AUTH } from "./constants";
+import { API_AUTH, ROUTES } from "./constants";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(db),
@@ -65,6 +65,6 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   pages: {
-    signIn: AUTH.LOGIN,
+    signIn: ROUTES.AUTH.LOGIN,
   },
 };
