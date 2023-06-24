@@ -6,6 +6,7 @@ interface RequestBody {
   price: number;
   description: string;
   seller: string;
+  thumbnail?: string;
 }
 
 async function handler(request: NextRequest) {
@@ -17,6 +18,7 @@ async function handler(request: NextRequest) {
       description: body.description,
       price: body.price,
       seller: body.seller,
+      thumbnail: body.thumbnail,
     },
   });
 

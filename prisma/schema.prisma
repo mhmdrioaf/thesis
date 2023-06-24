@@ -11,18 +11,35 @@ model User {
   id            String    @id @default(cuid())
   username      String?   @unique
   password      String?
-  name          String?
-  email         String?   @unique
+  name          String
+  email         String    @unique
   emailVerified DateTime?
   image         String?
-  product       Product[]
+  products      Product[]
+  ratedProducts Rating[]
+
+  @@unique([email, username], name: "user_identifier")
 }
 
 model Product {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   price       Int
+  thumbnail   String?
+  images      String[]
   description String
-  user        User?   @relation(fields: [seller], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [seller], references: [id], onDelete: Cascade)
+  ratings     Rating[]
   seller      String?
+}
+
+model Rating {
+  id                 String   @id @default(cuid())
+  commentedAt        DateTime @default(now())
+  commentatorId      String
+  commentValue       String
+  commentedProductId Int
+  ratingValue        Float
+  user               User?    @relation(fields: [commentatorId], references: [id], onDelete: Cascade)
+  product            Product? @relation(fields: [commentedProductId], references: [id], onDelete: Cascade)
 }
