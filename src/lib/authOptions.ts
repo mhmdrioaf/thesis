@@ -3,6 +3,7 @@ import type { AuthOptions } from "next-auth/core/types";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./db";
 import { User } from "@prisma/client";
+import { API_AUTH, AUTH } from "./constants";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(db),
@@ -13,14 +14,11 @@ export const authOptions: AuthOptions = {
         password: { type: "text" },
       },
       async authorize(credentials) {
-        const authResponse = await fetch(
-          "http://localhost:3000/api/auth/login",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
-          }
-        );
+        const authResponse = await fetch(API_AUTH.LOGIN, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(credentials),
+        });
 
         if (!authResponse.ok) {
           return null;
@@ -65,5 +63,8 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
+  },
+  pages: {
+    signIn: AUTH.LOGIN,
   },
 };

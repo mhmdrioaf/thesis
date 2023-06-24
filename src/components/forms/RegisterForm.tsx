@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "../inputs/TextField";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { API_AUTH, ROUTES } from "@/lib/constants";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +30,7 @@ export default function RegisterForm() {
     event.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:3000/api/register", {
+      const res = await fetch(API_AUTH.REGISTER, {
         method: "POST",
         body: JSON.stringify(newUser),
         headers: { "Content-Type": "application/json" },
@@ -39,7 +39,7 @@ export default function RegisterForm() {
       if (!res.ok) {
         throw new Error(await res.json());
       }
-      router.push("/auth/login");
+      router.push(ROUTES.AUTH.LOGIN);
     } catch (e) {
       console.error("Register failed: ", e);
     }

@@ -11,6 +11,7 @@ import NavButtons from "../navs/NavButtons";
 import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
+import { ROUTES } from "@/lib/constants";
 
 interface Props {
   homeTabs: Tab[];
@@ -19,7 +20,7 @@ interface Props {
 
 export default function Header({ homeTabs, marketplaceTabs }: Props) {
   const { drawerState } = useGlobalState();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
   const conditionalHeaderStyle =
@@ -41,7 +42,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   }, []);
   return (
     <div className={headerStyle}>
-      {pathname !== "/marketplace" && (
+      {pathname !== ROUTES.MARKETPLACE && (
         <>
           <div
             id="header-logo"
@@ -74,7 +75,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
           </div>
         </>
       )}
-      {pathname === "/marketplace" && (
+      {pathname === ROUTES.MARKETPLACE && (
         <>
           <NavLink
             tabs={marketplaceTabs.filter(
@@ -125,7 +126,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
         </>
       )}
       <BottomDrawer
-        tabs={pathname === "/marketplace" ? marketplaceTabs : homeTabs}
+        tabs={pathname === ROUTES.MARKETPLACE ? marketplaceTabs : homeTabs}
         drawerState={drawerState}
       />
     </div>

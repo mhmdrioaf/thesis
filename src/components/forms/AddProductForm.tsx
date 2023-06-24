@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import supabase from "@/lib/supabase";
+import { API_PRODUCTS, ROUTES } from "@/lib/constants";
 
 export default function AddProductForm() {
   const [newProduct, setNewProduct] = useState<NewProduct | null>(null);
@@ -81,14 +82,11 @@ export default function AddProductForm() {
               thumbnail: thumbnailURL,
             };
 
-            const productResponse = await fetch(
-              "http://localhost:3000/api/create-product",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(productToSubmit),
-              }
-            );
+            const productResponse = await fetch(API_PRODUCTS.CREATE, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(productToSubmit),
+            });
 
             if (!productResponse.ok) {
               console.error(
@@ -96,9 +94,7 @@ export default function AddProductForm() {
                 productResponse.status
               );
             } else {
-              router.push(
-                '/marketplace?status="Successfully added new product!"'
-              );
+              router.push(ROUTES.MARKETPLACE + "?status=Added new product!");
             }
           }
         }
