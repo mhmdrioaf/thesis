@@ -20,13 +20,13 @@ export const authOptions: AuthOptions = {
           body: JSON.stringify(credentials),
         });
 
-        if (!authResponse.ok) {
-          return null;
-        }
-
         const user = await authResponse.json();
 
-        return user;
+        if (authResponse.ok && user) {
+          return user;
+        }
+
+        return null;
       },
     }),
   ],
