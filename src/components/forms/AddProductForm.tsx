@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import TextField from "../inputs/TextField";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
-import supabase from "@/lib/supabase";
 import { API_PRODUCTS, ROUTES } from "@/lib/constants";
+import supabase from "@/lib/supabase";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
+import TextField from "../inputs/TextField";
 
 export default function AddProductForm() {
   const [newProduct, setNewProduct] = useState<NewProduct | null>(null);
