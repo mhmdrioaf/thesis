@@ -5,6 +5,7 @@ import { db } from "./db";
 import { API_AUTH, ROUTES } from "./constants";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
