@@ -60,7 +60,7 @@ export default function AddProductForm() {
 
       try {
         if (thumbnail) {
-          const fileName = `${newProduct?.name}_${session.user.id}/thumbnail/${newProduct?.name}_${session.user.id}_thumbnail`;
+          const fileName = `${session.user.id}/${newProduct?.name}/${newProduct?.name}_${session.user.id}_thumbnail`;
           const { data, error } = await supabase.storage
             .from("products")
             .upload(fileName, thumbnail, {
