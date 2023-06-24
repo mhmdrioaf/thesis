@@ -8,6 +8,7 @@ export default function BottomDrawer({
   tabs,
 }: GlobalStateContextType & { tabs: Tab[] }) {
   const pathname = usePathname();
+  const tabsHasElements = tabs.filter((tab: Tab) => tab.element !== undefined);
   return (
     <div
       className={
@@ -33,6 +34,11 @@ export default function BottomDrawer({
               {tab.name}
             </Link>
           ))}
+
+        {tabsHasElements.length > 0 &&
+          tabsHasElements
+            .filter((tab: Tab) => tab.id !== "buttons")
+            .map((tab: Tab) => tab?.element)}
       </div>
     </div>
   );

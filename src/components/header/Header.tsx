@@ -19,10 +19,16 @@ interface Props {
 }
 
 export default function Header({ homeTabs, marketplaceTabs }: Props) {
+  const [scrollValue, setScrollValue] = useState(0);
+
   const { drawerState } = useGlobalState();
   const { status } = useSession();
-  const [scrollValue, setScrollValue] = useState(0);
   const pathname = usePathname();
+
+  const marketplaceTabsWithoutAuth = marketplaceTabs.filter(
+    (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+  );
+
   const conditionalHeaderStyle =
     scrollValue > 50 ? "px-8 lg:px-16" : "px-10 lg:px-24";
   const headerStyle =
@@ -126,7 +132,29 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
         </>
       )}
       <BottomDrawer
-        tabs={pathname === ROUTES.MARKETPLACE ? marketplaceTabs : homeTabs}
+        tabs={
+          pathname === ROUTES.MARKETPLACE
+            ? status === "authenticated"
+              ? [
+                  ...marketplaceTabsWithoutAuth,
+                  {
+                    element: (
+                      <button
+                        className="w-full px-2 py-2 bg-red-950 text-white"
+                        onClick={() => signOut()}
+                      >
+                        Sign out
+                      </button>
+                    ),
+                  },
+                ]
+              : marketplaceTabs
+            : status === "authenticated"
+            ? homeTabs.filter(
+                (tab: Tab) => tab.id !== "login" && tab.id !== "register"
+              )
+            : homeTabs
+        }
         drawerState={drawerState}
       />
     </div>
