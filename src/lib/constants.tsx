@@ -155,7 +155,7 @@ export const MARKETPLACE_TABS: Tab[] = [
 ];
 
 // apis
-export const API_BASE_URL = "http://localhost:3000";
+export const API_BASE_URL = "https://mhmdrioaf-thesis.vercel.app";
 export const API_AUTH = {
   LOGIN: API_BASE_URL + "/api/auth/login",
   REGISTER: API_BASE_URL + "/api/register",
