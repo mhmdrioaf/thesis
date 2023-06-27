@@ -1,10 +1,7 @@
 "use client";
 
 import LoadingSpinner from "@/components/indicators/LoadingSpinner";
-import supabase from "@/lib/supabase";
-import { UserIcon } from "@heroicons/react/24/solid";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import React from "react";
 import ProfileImageUpload from "./ImageUpload";
 
