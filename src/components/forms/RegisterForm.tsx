@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "../inputs/TextField";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { API_AUTH, ROUTES } from "@/lib/constants";
+import { ROUTES } from "@/lib/constants";
 import Snackbar from "../snackbars/Snackbar";
 
 export default function RegisterForm() {
@@ -35,7 +35,7 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(API_AUTH.REGISTER, {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_AUTH_REGISTER!, {
         method: "POST",
         body: JSON.stringify(newUser),
         headers: { "Content-Type": "application/json" },

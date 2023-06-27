@@ -2,7 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./db";
-import { API_AUTH, ROUTES } from "./constants";
+import { ROUTES } from "./constants";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -17,11 +17,14 @@ export const authOptions: NextAuthOptions = {
         password: { type: "text" },
       },
       async authorize(credentials) {
-        const authResponse = await fetch(API_AUTH.LOGIN, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(credentials),
-        });
+        const authResponse = await fetch(
+          process.env.NEXT_PUBLIC_API_AUTH_LOGIN!,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(credentials),
+          }
+        );
 
         const user = await authResponse.json();
 

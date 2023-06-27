@@ -1,6 +1,6 @@
 "use client";
 
-import { API_PRODUCTS, ROUTES } from "@/lib/constants";
+import { ROUTES } from "@/lib/constants";
 import supabase from "@/lib/supabase";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useSession } from "next-auth/react";
@@ -91,11 +91,14 @@ export default function AddProductForm() {
               thumbnail: thumbnailURL,
             };
 
-            const productResponse = await fetch(API_PRODUCTS.CREATE, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(productToSubmit),
-            });
+            const productResponse = await fetch(
+              process.env.NEXT_PUBLIC_API_PRODUCT_CREATE!,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(productToSubmit),
+              }
+            );
 
             if (!productResponse.ok) {
               setIsLoading(false);

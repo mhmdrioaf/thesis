@@ -153,13 +153,3 @@ export const MARKETPLACE_TABS: Tab[] = [
     element: <AuthGroupButton />,
   },
 ];
-
-// apis
-export const API_BASE_URL = "https://mhmdrioaf-thesis.vercel.app";
-export const API_AUTH = {
-  LOGIN: API_BASE_URL + "/api/auth/login",
-  REGISTER: API_BASE_URL + "/api/register",
-};
-export const API_PRODUCTS = {
-  CREATE: API_BASE_URL + "/api/create-product",
-};
