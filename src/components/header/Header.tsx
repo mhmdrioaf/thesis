@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 import CartButton from "../buttons/CartButton";
 import Hamburger from "../buttons/Hamburger";
 import BottomDrawer from "../drawers/BottomDrawer";
-import NavButtons from "../navs/NavButtons";
 import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
-import { ROUTES } from "@/lib/constants";
+import { HEADER_MENU_TABS, ROUTES } from "@/lib/constants";
+import { UserIcon } from "@heroicons/react/24/solid";
+import HeaderMenu from "./Menu";
+import NavButtons from "../navs/NavButtons";
 
 interface Props {
   homeTabs: Tab[];
@@ -20,9 +22,10 @@ interface Props {
 
 export default function Header({ homeTabs, marketplaceTabs }: Props) {
   const [scrollValue, setScrollValue] = useState(0);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
 
   const { drawerState } = useGlobalState();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
 
   const marketplaceTabsWithoutAuth = marketplaceTabs.filter(
@@ -34,6 +37,11 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
   const headerStyle =
     "w-full sticky top-0 z-10 transition-padding duration-200 ease-in-out flex flex-row justify-between items-center border-b border-b-gray-100 py-4 bg-white bg-opacity-95 backdrop-blur-md relative " +
     conditionalHeaderStyle;
+
+  const conditionalHeaderMenuStyle =
+    scrollValue > 50
+      ? "bg-opacity-95 backdrop-blur-md"
+      : "bg-opacity-100 backdrop-none";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -103,31 +111,41 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               quality={75}
             />
           </div>
-          <NavButtons
-            tabs={
-              status === "authenticated"
-                ? [
-                    {
-                      element: (
-                        <button
-                          className="px-2 py-2"
-                          key="signoutbutton"
-                          onClick={() => signOut()}
-                        >
-                          Sign out
-                        </button>
-                      ),
-                    },
-                  ]
-                : status === "loading"
-                ? [
-                    {
-                      element: <LoadingSpinner key="loading-spinner" />,
-                    },
-                  ]
-                : marketplaceTabs
-            }
-          />
+          <div className="hidden lg:block">
+            {status === "loading" && <LoadingSpinner />}
+            {status !== "loading" && (
+              <>
+                {status === "authenticated" && (
+                  <div
+                    className="w-12 h-12 rounded-full border border-gray-300 cursor-pointer hidden lg:inline-block relative"
+                    onClick={() => setHeaderMenuOpen((prev) => !prev)}
+                  >
+                    {session && session.user.image ? (
+                      <Image
+                        src={session.user.image}
+                        fill
+                        alt="profile picture"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full grid place-items-center">
+                        <UserIcon className="w-4 h-4 text-gray-500" />
+                      </div>
+                    )}
+                    {headerMenuOpen && (
+                      <HeaderMenu
+                        tabs={HEADER_MENU_TABS}
+                        style={conditionalHeaderMenuStyle}
+                      />
+                    )}
+                  </div>
+                )}
+                {status === "unauthenticated" && (
+                  <NavButtons tabs={marketplaceTabs} />
+                )}
+              </>
+            )}
+          </div>
           <CartButton onClick={() => console.log("hello")} />
         </>
       )}
@@ -140,6 +158,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                   {
                     element: (
                       <button
+                        key="sign out button"
                         className="w-full px-2 py-2 bg-red-950 text-white"
                         onClick={() => signOut()}
                       >
@@ -147,7 +166,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                       </button>
                     ),
                   },
-                ]
+                ].concat(HEADER_MENU_TABS)
               : marketplaceTabs
             : status === "authenticated"
             ? homeTabs.filter(
