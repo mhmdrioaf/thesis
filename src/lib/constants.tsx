@@ -199,3 +199,22 @@ export const HEADER_MENU_TABS: Tab[] = [
     ),
   },
 ];
+
+export const PROFILE_PAGE_TABS: Tab[] = [
+  {
+    id: "bio",
+    name: "Personal Info",
+  },
+  {
+    id: "addresses",
+    name: "Addresses",
+  },
+  {
+    id: "payments",
+    name: "Payment Method",
+  },
+  {
+    id: "security",
+    name: "Security",
+  },
+];
