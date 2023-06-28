@@ -11,7 +11,7 @@ import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
 import { HEADER_MENU_TABS, ROUTES } from "@/lib/constants";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { Bars2Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import HeaderMenu from "./Menu";
 import NavButtons from "../navs/NavButtons";
 
@@ -42,6 +42,18 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
     scrollValue > 50
       ? "bg-opacity-95 backdrop-blur-md"
       : "bg-opacity-100 backdrop-none";
+
+  function imageLoader({
+    src,
+    width,
+    quality,
+  }: {
+    src: string;
+    width: number;
+    quality?: number | undefined;
+  }) {
+    return `${src}?/w=${width}&q=${quality || 75}`;
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,26 +129,34 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               <>
                 {status === "authenticated" && (
                   <div
-                    className="w-12 h-12 rounded-full border border-gray-300 cursor-pointer hidden lg:inline-block relative"
+                    className="hidden lg:flex lg:flex-row lg:items-center px-2 py-2 rounded-xl gap-2 cursor-pointer hover:bg-gray-300 bg-opacity-75 relative"
                     onClick={() => setHeaderMenuOpen((prev) => !prev)}
                   >
-                    {session && session.user.image ? (
-                      <Image
-                        src={session.user.image}
-                        fill
-                        alt="profile picture"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center">
-                        <UserIcon className="w-4 h-4 text-gray-500" />
-                      </div>
-                    )}
                     {headerMenuOpen && (
                       <HeaderMenu
                         tabs={HEADER_MENU_TABS}
                         style={conditionalHeaderMenuStyle}
                       />
+                    )}
+                    <div className="w-12 h-12 rounded-full border border-gray-300 relative overflow-hidden">
+                      {session && session.user.image ? (
+                        <Image
+                          src={session.user.image}
+                          fill
+                          alt="profile picture"
+                          className="object-cover"
+                          loader={imageLoader}
+                        />
+                      ) : (
+                        <div className="w-full h-full grid place-items-center">
+                          <UserIcon className="w-4 h-4 text-gray-500" />
+                        </div>
+                      )}
+                    </div>
+                    {!headerMenuOpen ? (
+                      <Bars2Icon className="w-4 h-4 text-gray-500" />
+                    ) : (
+                      <XMarkIcon className="w-4 h-4 text-gray-500" />
                     )}
                   </div>
                 )}

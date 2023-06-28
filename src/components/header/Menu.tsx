@@ -11,7 +11,7 @@ interface PageProps {
 export default function HeaderMenu({ tabs, style }: PageProps) {
   return (
     <div
-      className={`w-max py-8 bg-white flex flex-col gap-8 items-start rounded-ee-lg rounded-es-lg absolute left-1/2 -translate-x-1/2 top-16 ${style}`}
+      className={`w-max py-8 bg-white flex flex-col gap-8 items-start rounded-ee-lg rounded-es-lg absolute left-1/2 -translate-x-1/2 top-20 ${style}`}
     >
       {tabs
         .filter((tab: Tab) => tab.route !== undefined)
