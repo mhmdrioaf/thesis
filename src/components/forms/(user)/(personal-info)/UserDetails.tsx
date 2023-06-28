@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import Container from "@/components/container/Container";
 
 export default function UserDetails({
   setModalShown,
@@ -70,7 +69,7 @@ export default function UserDetails({
             </tr>
           </tbody>
         </table>
-        <Container className="w-full rounded-xl overflow-hidden border border-gray-300 flex flex-col gap-4">
+        <div className="px-8 py-8 w-full rounded-xl overflow-hidden border border-gray-300 flex flex-col gap-4">
           <p className="font-semibold">Destructive Actions</p>
           <p>
             Please be aware that, this action would be deleting your account
@@ -79,7 +78,7 @@ export default function UserDetails({
           <button className="w-max px-4 py-4 bg-red-950 text-white rounded-md">
             Delete Account
           </button>
-        </Container>
+        </div>
       </div>
     );
   }
