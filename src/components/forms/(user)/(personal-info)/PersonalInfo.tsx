@@ -7,6 +7,8 @@ import ProfileImageUpload from "./ImageUpload";
 import UserDetails from "./UserDetails";
 import { useForm, SubmitHandler } from "react-hook-form";
 import ModalsContainer from "@/components/container/ModalsContainer";
+import Snackbar from "@/components/snackbars/Snackbar";
+import CapitalizeWords from "@/lib/capitalizeWords";
 
 type Inputs = {
   name: string;
@@ -17,10 +19,12 @@ type Inputs = {
 export default function PersonalInfo() {
   const [isLoading, setIsLoading] = useState(false);
   const [modalShown, setModalShown] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const { data: session, status, update } = useSession();
   const { register, handleSubmit, reset } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setIsLoading(true);
+    setMessage(null);
     try {
       if (session) {
         const res = await fetch(process.env.NEXT_PUBLIC_API_USER_UPDATE!, {
@@ -29,14 +33,18 @@ export default function PersonalInfo() {
           body: JSON.stringify({ id: session.user.id, ...data }),
         });
 
-        if (!res.ok) {
+        const updateResponse = await res.json();
+
+        if (!updateResponse.ok) {
+          const errorCause = updateResponse.cause.map((cause: string) =>
+            CapitalizeWords(cause)
+          );
           setIsLoading(false);
-          console.error("Response not ok: ", res.statusText);
+          setMessage(`${errorCause} already exists!`);
         } else {
           setModalShown(null);
           setIsLoading(false);
           update();
-          console.log(await res.json());
         }
       }
     } catch (e) {
@@ -160,6 +168,7 @@ export default function PersonalInfo() {
 
   return (
     <div className="flex flex-col justify-center items-center lg:flex-row lg:justify-normal lg:items-start gap-8 relative">
+      {message && <Snackbar message={message} variant="ERROR" />}
       <ProfileImageUpload />
       <UserDetails setModalShown={setModalShown} />
 
