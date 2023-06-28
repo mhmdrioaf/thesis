@@ -27,10 +27,9 @@ async function handler(request: NextRequest) {
     });
 
     if (user) {
-      const { password, ...result } = user;
-      return new NextResponse(JSON.stringify(result));
+      return NextResponse.json({ ok: true });
     } else {
-      return NextResponse.json({ error: "An error occured" });
+      return NextResponse.json({ ok: false });
     }
   } catch (error) {
     console.error(error);
