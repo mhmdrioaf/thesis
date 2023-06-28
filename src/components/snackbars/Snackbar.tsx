@@ -38,7 +38,7 @@ export default function Snackbar({
   const [hide, setHide] = useState(false);
 
   const snackbarBaseStyle =
-    "w-1/2 px-2 py-2 rounded-lg flex justify-between items-center fixed bottom-4 left-8 mx-auto z-10 bg-opacity-95 backdrop-blur-sm ";
+    "w-1/2 px-2 py-2 rounded-lg flex justify-between items-center fixed bottom-4 left-8 mx-auto z-40 bg-opacity-95 backdrop-blur-sm ";
   const snackbarIconBaseStyle = "w-8 h-8 cursor-pointer ";
   const snackbarStyles: SnackbarVariant = {
     PRIMARY: {
