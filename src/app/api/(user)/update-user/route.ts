@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RequestBody {
@@ -6,26 +7,38 @@ interface RequestBody {
   name?: string;
   phoneNumber?: number;
   image?: string;
+  username?: string;
+  email?: string;
 }
 
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
+  try {
+    const user = await db.user.update({
+      where: {
+        id: body.id,
+      },
+      data: {
+        name: body.name,
+        image: body.image,
+        username: body.username,
+        email: body.email,
+      },
+    });
 
-  const user = await db.user.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      name: body.name,
-      image: body.image,
-    },
-  });
-
-  if (user) {
-    const { password, ...result } = user;
-    return new NextResponse(JSON.stringify(result));
-  } else {
-    return NextResponse.json({ error: "An error occured" });
+    if (user) {
+      const { password, ...result } = user;
+      return new NextResponse(JSON.stringify(result));
+    } else {
+      return NextResponse.json({ error: "An error occured" });
+    }
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return NextResponse.json({ ok: false, cause: error.meta?.target });
+      }
+    }
   }
 }
 
