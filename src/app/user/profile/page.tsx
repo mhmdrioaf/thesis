@@ -15,7 +15,7 @@ export default function UserProfile() {
   const tabs = PROFILE_PAGE_TABS;
 
   function activePageChecker(page: string | undefined) {
-    const defaultStyle = `w-full cursor-pointer uppercase font-semibold text-center border-b-4 transition-all ${
+    const defaultStyle = `flex-grow shrink-0 cursor-pointer uppercase font-semibold text-center border-b-4 transition-all ${
       activePage === page ? "border-b-primary" : "border-b-transparent"
     }`;
 
@@ -47,8 +47,8 @@ export default function UserProfile() {
   }
 
   return (
-    <Container className="flex flex-col gap-4">
-      <div className="flex flex-row gap-8 justify-evenly items-center border-b border-b-gray-300">
+    <Container className="w-full overflow-hidden flex flex-col gap-4">
+      <div className="overflow-x-auto flex flex-row gap-8 justify-stretch items-center border-b border-b-gray-300">
         {tabs.map((tab: Tab) => (
           <div
             key={tab.id}
