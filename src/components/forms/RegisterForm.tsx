@@ -6,6 +6,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 import Snackbar from "../snackbars/Snackbar";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +46,11 @@ export default function RegisterForm() {
         setErrorMessage(res.statusText);
         setIsLoading(false);
       } else {
-        router.push(ROUTES.AUTH.LOGIN);
+        await signIn("credentials", {
+          redirect: false,
+          username: newUser.username,
+          password: newUser.password,
+        }).then(() => router.push(ROUTES.MARKETPLACE));
         setIsLoading(false);
       }
     } catch (e) {

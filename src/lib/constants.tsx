@@ -1,4 +1,10 @@
 import { AuthGroupButton } from "@/components/buttons/AuthButton";
+import {
+  ArrowRightOnRectangleIcon,
+  BookmarkIcon,
+  Cog6ToothIcon,
+  UserIcon,
+} from "@heroicons/react/24/solid";
 
 // Dummies data
 const socialMediaData = {
@@ -134,6 +140,12 @@ export const ROUTES = {
   },
   PRODUCT_DETAIL: (productId: string | number) =>
     `/marketplace/product/${productId}`,
+
+  USER: {
+    PROFILE: "/user/profile",
+    SETTINGS: "/user/settings",
+    WISHLISTS: "user/wishlists",
+  },
 };
 
 // pages tabs
@@ -150,6 +162,59 @@ export const MARKETPLACE_TABS: Tab[] = [
   { id: "register", route: ROUTES.AUTH.REGISTER, name: "Daftar" },
   {
     id: "buttons",
-    element: <AuthGroupButton />,
+    element: <AuthGroupButton key="auth group button" />,
+  },
+];
+
+export const HEADER_MENU_TABS: Tab[] = [
+  {
+    id: "profile",
+    route: ROUTES.USER.PROFILE,
+    name: "Profile",
+    element: <UserIcon className="w-4 h-4 text-gray-500" />,
+  },
+  {
+    id: "wishlists",
+    route: ROUTES.USER.WISHLISTS,
+    name: "Wishlist's",
+    element: <BookmarkIcon className="w-4 h-4 text-gray-500" />,
+  },
+  {
+    id: "settings",
+    route: ROUTES.USER.SETTINGS,
+    name: "Settings",
+    element: <Cog6ToothIcon className="w-4 h-4 text-gray-500" />,
+  },
+  {
+    id: "logout",
+    name: "Log out",
+    element: (
+      <div
+        key="logout button"
+        className="w-full px-4 flex flex-row gap-2 items-center text-gray-500 hover:underline"
+      >
+        <ArrowRightOnRectangleIcon className="w-4 h-4" />
+        <p className="text-500">Log out</p>
+      </div>
+    ),
+  },
+];
+
+export const PROFILE_PAGE_TABS: Tab[] = [
+  {
+    id: "bio",
+    name: "Personal Info",
+  },
+  {
+    id: "addresses",
+    name: "Addresses",
+  },
+  {
+    id: "payments",
+    name: "Payment Method",
+  },
+  {
+    id: "security",
+    name: "Security",
   },
 ];

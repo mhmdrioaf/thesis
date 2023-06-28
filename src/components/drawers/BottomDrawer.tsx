@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 export default function BottomDrawer({
   drawerState,
   tabs,
 }: GlobalStateContextType & { tabs: Tab[] }) {
   const pathname = usePathname();
-  const tabsHasElements = tabs.filter((tab: Tab) => tab.element !== undefined);
+  const { status } = useSession();
   return (
     <div
       className={
@@ -18,27 +19,31 @@ export default function BottomDrawer({
       }
       onClick={() => drawerState.setDrawerOpen(false)}
     >
-      <div className="w-full py-4 px-4 bg-white rounded-xl flex flex-col gap-2 absolute bottom-0 left-0">
+      <div className="w-full py-4 px-4 bg-white rounded-ss-xl rounded-se-xl flex flex-col gap-2 absolute bottom-0 left-0">
         {tabs
-          .filter((tab: Tab) => tab.element === undefined)
+          .filter((tab: Tab) => tab.route !== undefined)
           .map((tab: Tab) => (
             <Link
               href={tab.route!}
               key={tab.id}
               className={
                 pathname === tab.route
-                  ? "w-full px-4 py-4 bg-primary text-white rounded-md hover:cursor-pointer"
-                  : "w-full px-4 py-4 text-neutral-950 rounded-md hover:cursor-pointer hover:bg-primary hover:text-white"
+                  ? "w-full px-4 py-4 flex items-center gap-2 bg-primary text-white rounded-md hover:cursor-pointer"
+                  : "w-full px-4 py-4 flex items-center gap-2 text-neutral-950 rounded-md hover:cursor-pointer hover:bg-primary hover:text-white"
               }
             >
+              {tab?.element}
               {tab.name}
             </Link>
           ))}
-
-        {tabsHasElements.length > 0 &&
-          tabsHasElements
-            .filter((tab: Tab) => tab.id !== "buttons")
-            .map((tab: Tab) => tab?.element)}
+        {status === "authenticated" && (
+          <button
+            className="w-full py-4 rounded-md bg-red-950 text-white"
+            onClick={() => signOut()}
+          >
+            Log out
+          </button>
+        )}
       </div>
     </div>
   );
