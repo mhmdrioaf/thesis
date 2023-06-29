@@ -74,9 +74,11 @@ export default function UserDetails({
               {session.user && (
                 <td className="flex py-4 gap-4 items-center">
                   <p>
-                    {new Date(
-                      `${session.user.birthdate}`
-                    ).toLocaleDateString() || "Not yet setted"}
+                    {session.user.birthdate
+                      ? new Date(
+                          `${session.user.birthdate}`
+                        ).toLocaleDateString()
+                      : "Not setted yet"}
                   </p>
                   <button
                     className="text-primary"
@@ -94,7 +96,7 @@ export default function UserDetails({
               {session.user && (
                 <td className="flex py-4 gap-4 items-center">
                   <p>
-                    {session.user.phoneNumber?.toString() || "Not yet setted"}
+                    {session.user.phoneNumber?.toString() || "Not setted yet"}
                   </p>
                   <button
                     className="text-primary"
