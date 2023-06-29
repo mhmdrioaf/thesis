@@ -1,7 +1,7 @@
 "use client";
 
 import Container from "@/components/container/Container";
-import Addresses from "@/components/forms/user/Addresses";
+import Addresses from "@/components/forms/user/addresses/Addresses";
 import PaymentMethod from "@/components/forms/user/PaymentMethod";
 import PersonalInfo from "@/components/forms/user/personal-info/PersonalInfo";
 import Security from "@/components/forms/user/Security";
