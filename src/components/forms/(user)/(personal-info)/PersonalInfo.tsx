@@ -8,12 +8,14 @@ import UserDetails from "./UserDetails";
 import { useForm, SubmitHandler } from "react-hook-form";
 import ModalsContainer from "@/components/container/ModalsContainer";
 import Snackbar from "@/components/snackbars/Snackbar";
-import CapitalizeWords from "@/lib/capitalizeWords";
+import { capitalizeFirstWord, phoneNumberConverter } from "@/lib/helper";
 
 type Inputs = {
   name: string;
   username: string;
   email: string;
+  birthdate: Date;
+  phoneNumber: number;
 };
 
 export default function PersonalInfo() {
@@ -37,7 +39,7 @@ export default function PersonalInfo() {
 
         if (!updateResponse.ok) {
           const errorCause = updateResponse.cause.map((cause: string) =>
-            CapitalizeWords(cause)
+            capitalizeFirstWord(cause)
           );
           setIsLoading(false);
           setMessage(`${errorCause} already exists!`);
@@ -139,6 +141,72 @@ export default function PersonalInfo() {
                   id="username"
                   defaultValue={session.user.username!}
                   {...register("username")}
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2 rounded-md text-white bg-primary disabled:bg-gray-300 disabled:text-gray-500"
+                  disabled={isLoading}
+                >
+                  Save
+                </button>
+              </form>
+            </ModalsContainer>
+          );
+        }
+        case "birthdate": {
+          return (
+            <ModalsContainer
+              title="Change birthdate"
+              description="Fill the input below based on your birthdate."
+              onClose={() => hideModal()}
+            >
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
+              >
+                <label htmlFor="birthdate">Birthdate</label>
+                <input
+                  className="px-2 py-2 border border-gray-300 rounded-md"
+                  type="date"
+                  id="birthdate"
+                  {...register("birthdate", {
+                    valueAsDate: true,
+                  })}
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2 rounded-md text-white bg-primary disabled:bg-gray-300 disabled:text-gray-500"
+                  disabled={isLoading}
+                >
+                  Save
+                </button>
+              </form>
+            </ModalsContainer>
+          );
+        }
+        case "phoneNumber": {
+          return (
+            <ModalsContainer
+              title="Change phone number"
+              description="Please be aware that this phone number is required for transactional purposes, so fill this using your current active phone number."
+              onClose={() => hideModal()}
+            >
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
+              >
+                <label htmlFor="phoneNumber">Phone Number</label>
+                <input
+                  className="px-2 py-2 border border-gray-300 rounded-md"
+                  type="number"
+                  defaultValue={
+                    session.user.phoneNumber?.toString() || undefined
+                  }
+                  placeholder="08xxx"
+                  id="phoneNumber"
+                  {...register("phoneNumber", {
+                    setValueAs: (v) => phoneNumberConverter(v),
+                  })}
                 />
                 <button
                   type="submit"
