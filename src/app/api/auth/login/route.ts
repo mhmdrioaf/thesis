@@ -25,7 +25,11 @@ const handler = async (request: NextRequest) => {
 
   if (user && (await bcrypt.compare(body.password, user.password!))) {
     const { password, ...result } = user;
-    return new NextResponse(JSON.stringify(result));
+    return new NextResponse(
+      JSON.stringify(result, (_, v) =>
+        typeof v === "bigint" ? v.toString() : v
+      )
+    );
   } else return new NextResponse(JSON.stringify(null));
 };
 

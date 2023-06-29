@@ -67,6 +67,46 @@ export default function UserDetails({
                 </td>
               )}
             </tr>
+            <tr>
+              <td className="py-4 pr-4">
+                <p>Birthday</p>
+              </td>
+              {session.user && (
+                <td className="flex py-4 gap-4 items-center">
+                  <p>
+                    {session.user.birthdate
+                      ? new Date(
+                          `${session.user.birthdate}`
+                        ).toLocaleDateString()
+                      : "Not setted yet"}
+                  </p>
+                  <button
+                    className="text-primary"
+                    onClick={() => setModalShown("birthdate")}
+                  >
+                    Change
+                  </button>
+                </td>
+              )}
+            </tr>
+            <tr>
+              <td className="py-4 pr-4">
+                <p>Phone Number</p>
+              </td>
+              {session.user && (
+                <td className="flex py-4 gap-4 items-center">
+                  <p>
+                    {session.user.phoneNumber?.toString() || "Not setted yet"}
+                  </p>
+                  <button
+                    className="text-primary"
+                    onClick={() => setModalShown("phoneNumber")}
+                  >
+                    Change
+                  </button>
+                </td>
+              )}
+            </tr>
           </tbody>
         </table>
         <div className="px-8 py-8 w-full rounded-xl overflow-hidden border border-gray-300 flex flex-col gap-4">

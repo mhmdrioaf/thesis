@@ -47,7 +47,7 @@ export default function UserProfile() {
   }
 
   return (
-    <Container className="w-full overflow-hidden flex flex-col gap-4">
+    <Container className="w-full overflow-hidden flex flex-col gap-8">
       <div className="overflow-x-auto flex flex-row gap-8 justify-stretch items-center border-b border-b-gray-300">
         {tabs.map((tab: Tab) => (
           <div

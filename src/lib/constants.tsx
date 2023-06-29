@@ -144,7 +144,7 @@ export const ROUTES = {
   USER: {
     PROFILE: "/user/profile",
     SETTINGS: "/user/settings",
-    WISHLISTS: "user/wishlists",
+    WISHLISTS: "/user/wishlists",
   },
 };
 

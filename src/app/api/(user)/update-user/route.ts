@@ -9,6 +9,7 @@ interface RequestBody {
   image?: string;
   username?: string;
   email?: string;
+  birthdate?: Date;
 }
 
 async function handler(request: NextRequest) {
@@ -23,6 +24,8 @@ async function handler(request: NextRequest) {
         image: body.image,
         username: body.username,
         email: body.email,
+        birthdate: body.birthdate,
+        phoneNumber: body.phoneNumber,
       },
     });
 
