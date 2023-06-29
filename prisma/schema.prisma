@@ -16,7 +16,7 @@ model User {
   emailVerified DateTime?
   image         String?
   birthdate     DateTime?
-  phoneNumber   Int?
+  phoneNumber   BigInt?
   addresses     Address[]
   products      Product[]
   ratedProducts Rating[]
