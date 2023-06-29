@@ -20,6 +20,7 @@ model User {
   addresses     Address[]
   products      Product[]
   ratedProducts Rating[]
+  mainAddress   String?   @unique
 
   @@unique([email, username], name: "user_identifier")
 }
@@ -48,12 +49,12 @@ model Rating {
 }
 
 model Address {
-  id            Int     @id @default(autoincrement())
+  id            String  @id @default(cuid())
   label         String
   note          String?
   fullAddress   String
   receiverName  String
-  receiverPhone Int
-  receiverId    String?
+  receiverPhone BigInt
+  receiverId    String
   receiver      User?   @relation(fields: [receiverId], references: [id], onDelete: Cascade)
 }
