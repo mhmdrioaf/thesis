@@ -7,7 +7,7 @@ import {
   DUMMY_MARKETPLACE_CAROUSEL_ASSETS as dummyAssets,
   DUMMY_MARKETPLACE_PRODUCTS as dummyProducts,
 } from "@/lib/constants";
-import RupiahConverter from "@/lib/rupiahConverter";
+import { rupiahConverter } from "@/lib/helper";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,7 +37,7 @@ export default function Marketplace() {
                 <p className="truncate" title={product?.desc}>
                   {product?.desc}
                 </p>
-                <b>{RupiahConverter(product.price)}</b>
+                <b>{rupiahConverter(product.price)}</b>
               </div>
             </Card>
           </Link>
