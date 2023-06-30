@@ -19,7 +19,6 @@ async function handler(
       birthdate: true,
       email: true,
       username: true,
-      mainAddress: true,
     },
   });
 
