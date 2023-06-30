@@ -3,31 +3,20 @@
 import CardContainer from "@/components/container/CardContainer";
 import ModalsContainer from "@/components/container/ModalsContainer";
 import LoadingSpinner from "@/components/indicators/LoadingSpinner";
-import TextField from "@/components/inputs/TextField";
-import {
-  CheckIcon,
-  MagnifyingGlassIcon,
-  PlusIcon,
-} from "@heroicons/react/24/solid";
+import { CheckIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { phoneNumberConverter } from "@/lib/helper";
+import { phoneNumberConverter, sortAddress } from "@/lib/helper";
 
 type Inputs = {
-  id?: string;
-  label: string;
-  note?: string;
-  fullAddress: string;
-  receiverName: string;
-  receiverPhone: string;
-  receiverId: string;
+  address: Address;
 };
 
 interface User {
   id: string;
   mainAddress?: string;
-  addresses: Inputs[];
+  addresses: Address[];
 }
 
 export default function Addresses() {
@@ -41,16 +30,15 @@ export default function Addresses() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setIsLoading(true);
     try {
-      const { id, ...dataToSubmit } = data;
-      const res = await fetch(process.env.NEXT_PUBLIC_API_USER_UPDATE!, {
+      const { receiverId, ...dataToSubmit } = data.address;
+      const res = await fetch("http://localhost:3000/api/create-address", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: user!.id,
+          userId: user!.id,
           address: {
             ...dataToSubmit,
-            // TODO: Make the address id using cuid() or uuidv4
-            id: `${session!.user.id}_address_${dataToSubmit.fullAddress}`,
+            receiverId: user!.id,
           },
         }),
       });
@@ -93,7 +81,7 @@ export default function Addresses() {
                 id="label"
                 className="px-2 py-2 border border-gray-300 rounded-md"
                 type="text"
-                {...register("label")}
+                {...register("address.label")}
                 required
                 placeholder="Home / Office"
               />
@@ -102,7 +90,7 @@ export default function Addresses() {
                 id="receiverName"
                 className="px-2 py-2 border border-gray-300 rounded-md"
                 type="text"
-                {...register("receiverName")}
+                {...register("address.receiverName")}
                 required
                 placeholder="Recipent name..."
               />
@@ -111,7 +99,7 @@ export default function Addresses() {
                 id="receiverPhone"
                 className="px-2 py-2 border border-gray-300 rounded-md"
                 type="number"
-                {...register("receiverPhone", {
+                {...register("address.receiverPhone", {
                   setValueAs: (v) => phoneNumberConverter(v),
                 })}
                 required
@@ -122,7 +110,7 @@ export default function Addresses() {
                 id="fullAddress"
                 className="px-2 py-2 border border-gray-300 rounded-md"
                 rows={2}
-                {...register("fullAddress")}
+                {...register("address.fullAddress")}
                 placeholder="Jl..."
                 required
               />
@@ -142,10 +130,13 @@ export default function Addresses() {
   async function updatePrimaryAddress(addressId: string) {
     setIsLoading(true);
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_USER_UPDATE!, {
+      const res = await fetch("http://localhost:3000/api/update-address", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user!.id, mainAddress: addressId }),
+        body: JSON.stringify({
+          addressId: addressId,
+          userId: user!.id,
+        }),
       });
 
       const updateResponse = await res.json();
@@ -215,85 +206,44 @@ export default function Addresses() {
       ) : (
         <div className="w-full flex flex-col gap-4">
           {userAddress && userAddress.length > 0 ? (
-            <>
-              {userAddress
-                .filter((address: Inputs) => address.id === user.mainAddress)
-                .map((address: Inputs) => (
-                  <CardContainer
-                    key={address.id}
-                    active={user.mainAddress === address.id}
-                  >
-                    <div className="w-full flex flex-row justify-between items-center">
-                      <div className="w-full flex flex-col gap-2">
-                        <div className="flex flex-row gap-1 items-center">
-                          <b>{address.label}</b>
-                          {user.mainAddress === address.id && (
-                            <div className="px-1 py-1 bg-neutral-700 text-white rounded-md grid place-items-center">
-                              Main
-                            </div>
-                          )}
-                        </div>
-                        <p>{address.receiverName}</p>
-                        <p>{address.receiverPhone}</p>
-                        <p>{address.fullAddress}</p>
-                        <div className="flex gap-4 items-center text-sm font-semibold">
-                          <p>Change address</p>
-                          <div className="w-px h-auto bg-primary bg-opacity-10" />
-                          <button
-                            onClick={() => updatePrimaryAddress(address.id!)}
-                          >
-                            Make this as a main address
-                          </button>
-                          <div className="w-px h-auto bg-primary bg-opacity-10" />
-                          <p>Delete</p>
-                        </div>
+            userAddress
+              .sort((address: Address) => sortAddress(address))
+              .map((address: Address) => (
+                <CardContainer
+                  key={address.id}
+                  active={address.mainAddressFor === user.id}
+                >
+                  <div className="w-full flex flex-row justify-between items-center">
+                    <div className="w-full flex flex-col gap-2">
+                      <div className="flex flex-row gap-1 items-center">
+                        <b>{address.label}</b>
+                        {address.mainAddressFor === user.id && (
+                          <div className="px-1 py-1 bg-neutral-700 text-white rounded-md grid place-items-center">
+                            Main
+                          </div>
+                        )}
                       </div>
-                      {user.mainAddress === address.id && (
-                        <CheckIcon className="w-8 h-8" />
-                      )}
-                    </div>
-                  </CardContainer>
-                ))}
-
-              {userAddress
-                .filter((address: Inputs) => address.id !== user.mainAddress)
-                .map((address: Inputs) => (
-                  <CardContainer
-                    key={address.id}
-                    active={user.mainAddress === address.id}
-                  >
-                    <div className="w-full flex flex-row justify-between items-center">
-                      <div className="w-full flex flex-col gap-2">
-                        <div className="flex flex-row gap-1 items-center">
-                          <b>{address.label}</b>
-                          {user.mainAddress === address.id && (
-                            <div className="px-1 py-1 bg-neutral-700 text-white rounded-md grid place-items-center">
-                              Main
-                            </div>
-                          )}
-                        </div>
-                        <p>{address.receiverName}</p>
-                        <p>{address.receiverPhone}</p>
-                        <p>{address.fullAddress}</p>
-                        <div className="flex gap-4 items-center text-sm font-semibold">
-                          <p>Change address</p>
-                          <div className="w-px h-auto bg-primary bg-opacity-10" />
-                          <button
-                            onClick={() => updatePrimaryAddress(address.id!)}
-                          >
-                            Make this as a main address
-                          </button>
-                          <div className="w-px h-auto bg-primary bg-opacity-10" />
-                          <p>Delete</p>
-                        </div>
+                      <p>{address.receiverName}</p>
+                      <p>{address.receiverPhone}</p>
+                      <p>{address.fullAddress}</p>
+                      <div className="flex gap-4 items-center text-sm font-semibold">
+                        <p>Change address</p>
+                        <div className="w-px h-auto bg-primary bg-opacity-10" />
+                        <button
+                          onClick={() => updatePrimaryAddress(address.id!)}
+                        >
+                          Make this as a main address
+                        </button>
+                        <div className="w-px h-auto bg-primary bg-opacity-10" />
+                        <p>Delete</p>
                       </div>
-                      {user.mainAddress === address.id && (
-                        <CheckIcon className="w-8 h-8" />
-                      )}
                     </div>
-                  </CardContainer>
-                ))}
-            </>
+                    {address.mainAddressFor === user.id && (
+                      <CheckIcon className="w-8 h-8" />
+                    )}
+                  </div>
+                </CardContainer>
+              ))
           ) : isLoading ? (
             <div className="w-full grid place-items-center">
               <LoadingSpinner />
