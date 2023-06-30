@@ -9,6 +9,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import ModalsContainer from "@/components/container/ModalsContainer";
 import Snackbar from "@/components/snackbars/Snackbar";
 import { capitalizeFirstWord, phoneNumberConverter } from "@/lib/helper";
+import { useRouter } from "next/navigation";
+import supabase from "@/lib/supabase";
 
 type Inputs = {
   name: string;
@@ -24,6 +26,9 @@ export default function PersonalInfo() {
   const [message, setMessage] = useState<string | null>(null);
   const { data: session, status, update } = useSession();
   const { register, handleSubmit, reset } = useForm<Inputs>();
+
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setIsLoading(true);
     setMessage(null);
@@ -54,6 +59,84 @@ export default function PersonalInfo() {
       console.error("An error occurred: ", e);
     }
   };
+  const deleteUser: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true);
+    setMessage(null);
+    if (session) {
+      if (session.user.username === data.username) {
+        try {
+          const res = await fetch("http://localhost:3000/api/delete-user", {
+            method: "POST",
+            // TODO: Add authorization token to protect the api request
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: session.user.id,
+              username: data.username,
+            }),
+          });
+
+          const updateResponse = await res.json();
+
+          if (!updateResponse.ok) {
+            setIsLoading(false);
+            setMessage(updateResponse.cause);
+          } else {
+            if (session.user.image) {
+              await deleteUserImage()
+                .then((response) => {
+                  if (response === true) {
+                    update().then(() => window.location.reload());
+                  }
+                })
+                .catch((error) => {
+                  setMessage(error);
+                });
+            } else {
+              await update().then(() => window.location.reload());
+            }
+          }
+        } catch (err) {
+          setMessage(null);
+          setIsLoading(false);
+          console.error(err);
+        }
+      } else {
+        setIsLoading(false);
+        setMessage("The username that you entered is incorrect.");
+      }
+    }
+  };
+
+  async function deleteUserImage() {
+    if (session) {
+      if (session.user.image) {
+        const { data, error } = await supabase.storage
+          .from("avatars")
+          .list(`${session.user.id}`);
+
+        if (data) {
+          const fileToRemove = data.map(
+            (file) => `${session.user.id}/${file.name}`
+          );
+          const { error } = await supabase.storage
+            .from("avatars")
+            .remove(fileToRemove);
+
+          if (error) {
+            return error;
+          } else {
+            return true;
+          }
+        }
+
+        if (error) {
+          return error;
+        }
+      } else {
+        return true;
+      }
+    }
+  }
 
   function hideModal() {
     setModalShown(null);
@@ -214,6 +297,44 @@ export default function PersonalInfo() {
                   disabled={isLoading}
                 >
                   Save
+                </button>
+              </form>
+            </ModalsContainer>
+          );
+        }
+        case "deleteUser": {
+          return (
+            <ModalsContainer
+              title="Delete account"
+              description="Please be aware that this action cannot be undone, and your account will be deleted permanently."
+              onClose={hideModal}
+            >
+              <div className="w-full px-2 py-2 rounded-md bg-red-950 text-white">
+                <p>
+                  Please fill in the inputs below with your username to
+                  continue. <br />
+                  Your username is: <b>{session.user.username}</b>
+                </p>
+              </div>
+
+              <form
+                onSubmit={handleSubmit(deleteUser)}
+                className="flex flex-col gap-4"
+              >
+                <label htmlFor="username">Username</label>
+                <input
+                  className="px-2 py-2 border border-gray-300 rounded-md"
+                  type="text"
+                  id="username"
+                  placeholder={session!.user!.username!}
+                  {...register("username")}
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2 rounded-md text-white bg-red-950 disabled:bg-gray-300 disabled:text-gray-500"
+                  disabled={isLoading}
+                >
+                  Delete
                 </button>
               </form>
             </ModalsContainer>

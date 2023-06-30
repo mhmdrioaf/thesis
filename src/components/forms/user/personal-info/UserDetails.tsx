@@ -115,7 +115,10 @@ export default function UserDetails({
             Please be aware that, this action would be deleting your account
             permanently, and cannot be restored.
           </p>
-          <button className="w-max px-4 py-4 bg-red-950 text-white rounded-md">
+          <button
+            onClick={() => setModalShown("deleteUser")}
+            className="w-max px-4 py-4 bg-red-950 text-white rounded-md"
+          >
             Delete Account
           </button>
         </div>
