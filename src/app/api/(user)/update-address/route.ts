@@ -4,34 +4,66 @@ import { NextRequest, NextResponse } from "next/server";
 interface RequestBody {
   addressId: string;
   userId?: string;
+  label?: string;
+  fullAddress?: string;
+  receiverName?: string;
+  receiverPhone: number;
+  isUpdate?: boolean;
+  address: Address;
 }
 
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
-  const removeMainAddress = await db.address.updateMany({
-    where: {
-      id: {
-        not: body.addressId,
+  if (request.method === "POST") {
+    const removeMainAddress = await db.address.updateMany({
+      where: {
+        id: {
+          not: body.addressId,
+        },
       },
-    },
-    data: {
-      mainAddressFor: null,
-    },
-  });
+      data: {
+        mainAddressFor: null,
+      },
+    });
 
-  if (removeMainAddress) {
+    if (removeMainAddress) {
+      try {
+        const address = await db.address.update({
+          where: {
+            id: body.addressId,
+          },
+          data: {
+            mainAddressFor: body.userId,
+          },
+        });
+
+        if (address) {
+          return NextResponse.json({ ok: true });
+        } else {
+          return NextResponse.json({ ok: false });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
+  if (request.method === "PATCH") {
     try {
-      const address = await db.address.update({
+      const updatedAddress = await db.address.update({
         where: {
           id: body.addressId,
         },
         data: {
-          mainAddressFor: body.userId,
+          fullAddress: body.address.fullAddress,
+          label: body.address.label,
+          receiverName: body.address.receiverName,
+          receiverPhone: parseInt(body.address.receiverPhone),
         },
       });
 
-      if (address) {
+      if (updatedAddress) {
         return NextResponse.json({ ok: true });
       } else {
         return NextResponse.json({ ok: false });
@@ -42,4 +74,4 @@ async function handler(request: NextRequest) {
   }
 }
 
-export { handler as POST };
+export { handler as POST, handler as PATCH };
