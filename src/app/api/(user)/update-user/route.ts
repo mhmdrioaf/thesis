@@ -14,6 +14,7 @@ interface RequestBody {
 
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
+
   try {
     const user = await db.user.update({
       where: {

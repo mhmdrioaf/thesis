@@ -48,12 +48,13 @@ model Rating {
 }
 
 model Address {
-  id            Int     @id @default(autoincrement())
-  label         String
-  note          String?
-  fullAddress   String
-  receiverName  String
-  receiverPhone Int
-  receiverId    String?
-  receiver      User?   @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  id             String  @id @default(cuid())
+  label          String
+  note           String?
+  fullAddress    String
+  receiverName   String
+  receiverPhone  BigInt
+  receiverId     String
+  mainAddressFor String?
+  receiver       User?   @relation(fields: [receiverId], references: [id], onDelete: Cascade)
 }

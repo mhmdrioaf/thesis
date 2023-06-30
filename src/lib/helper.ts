@@ -27,3 +27,11 @@ export function rupiahConverter(value: number) {
 export function capitalizeFirstWord(words: string) {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
+
+export function sortAddress(address: Address) {
+  if (address.mainAddressFor !== null) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
