@@ -36,7 +36,7 @@ export default function Addresses() {
     setIsLoading(true);
     try {
       const { receiverId, ...dataToSubmit } = data.address;
-      const res = await fetch("http://localhost:3000/api/create-address", {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_ADDRESS_CREATE!, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -67,7 +67,7 @@ export default function Addresses() {
     setIsLoading(true);
     try {
       const { id, ...dataToSubmit } = data.address;
-      const res = await fetch("http://localhost:3000/api/update-address", {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_ADDRESS_UPDATE!, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -262,7 +262,7 @@ export default function Addresses() {
   async function updatePrimaryAddress(addressId: string) {
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/update-address", {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_ADDRESS_UPDATE!, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -294,7 +294,7 @@ export default function Addresses() {
     event.preventDefault();
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/delete-address", {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_ADDRESS_DELETE!, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ addressId: addressId }),
@@ -320,7 +320,7 @@ export default function Addresses() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:3000/api/get-user/${session!.user!.id}`,
+          `${process.env.NEXT_PUBLIC_API_USER_GET}${session!.user!.id}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
