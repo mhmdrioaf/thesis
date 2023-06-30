@@ -46,3 +46,14 @@ type NewUser = {
   name: string;
   password: string;
 };
+
+type Address = {
+  id?: string;
+  label: string;
+  note?: string;
+  fullAddress: string;
+  receiverName: string;
+  receiverPhone: string;
+  receiverId: string;
+  mainAddressFor?: string;
+};
