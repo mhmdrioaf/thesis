@@ -65,7 +65,7 @@ export default function PersonalInfo() {
     if (session) {
       if (session.user.username === data.username) {
         try {
-          const res = await fetch("http://localhost:3000/api/delete-user", {
+          const res = await fetch(process.env.NEXT_PUBLIC_API_USER_DELETE!, {
             method: "POST",
             // TODO: Add authorization token to protect the api request
             headers: { "Content-Type": "application/json" },
