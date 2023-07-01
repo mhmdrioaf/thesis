@@ -28,7 +28,7 @@ export default function UserDetails({
                   <p>{session.user.name}</p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("name")}
+                    onClick={() => setModalShown("user-name")}
                   >
                     Change
                   </button>
@@ -44,7 +44,7 @@ export default function UserDetails({
                   <p>{session.user.email}</p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("email")}
+                    onClick={() => setModalShown("user-email")}
                   >
                     Change
                   </button>
@@ -60,7 +60,7 @@ export default function UserDetails({
                   <p>{session.user.username}</p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("username")}
+                    onClick={() => setModalShown("user-username")}
                   >
                     Change
                   </button>
@@ -82,7 +82,7 @@ export default function UserDetails({
                   </p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("birthdate")}
+                    onClick={() => setModalShown("user-birthdate")}
                   >
                     Change
                   </button>
@@ -100,7 +100,7 @@ export default function UserDetails({
                   </p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("phoneNumber")}
+                    onClick={() => setModalShown("user-phoneNumber")}
                   >
                     Change
                   </button>
@@ -116,7 +116,7 @@ export default function UserDetails({
             permanently, and cannot be restored.
           </p>
           <button
-            onClick={() => setModalShown("deleteUser")}
+            onClick={() => setModalShown("user-delete")}
             className="w-max px-4 py-4 bg-red-950 text-white rounded-md"
           >
             Delete Account
