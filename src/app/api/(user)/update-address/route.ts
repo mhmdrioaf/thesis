@@ -2,13 +2,7 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RequestBody {
-  addressId: string;
   userId?: string;
-  label?: string;
-  fullAddress?: string;
-  receiverName?: string;
-  receiverPhone: number;
-  isUpdate?: boolean;
   address: Address;
 }
 
@@ -19,7 +13,7 @@ async function handler(request: NextRequest) {
     const removeMainAddress = await db.address.updateMany({
       where: {
         id: {
-          not: body.addressId,
+          not: body.address.id,
         },
       },
       data: {
@@ -31,7 +25,7 @@ async function handler(request: NextRequest) {
       try {
         const address = await db.address.update({
           where: {
-            id: body.addressId,
+            id: body.address.id,
           },
           data: {
             mainAddressFor: body.userId,
@@ -53,7 +47,7 @@ async function handler(request: NextRequest) {
     try {
       const updatedAddress = await db.address.update({
         where: {
-          id: body.addressId,
+          id: body.address.id,
         },
         data: {
           fullAddress: body.address.fullAddress,
