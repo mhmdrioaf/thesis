@@ -38,7 +38,7 @@ export default function BottomDrawer({
             </Link>
           ))}
         {status === "authenticated" && (
-          <Button variants="ERROR" onClick={() => signOut()}>
+          <Button variants="ERROR" onClick={() => signOut()} fullWidth>
             Log out
           </Button>
         )}

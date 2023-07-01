@@ -1,8 +1,10 @@
 import { AuthGroupButton } from "@/components/buttons/AuthButton";
 import {
+  ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
   BookmarkIcon,
   Cog6ToothIcon,
+  InboxArrowDownIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
 
@@ -197,6 +199,21 @@ export const HEADER_MENU_TABS: Tab[] = [
         <p className="text-500">Log out</p>
       </div>
     ),
+  },
+];
+
+export const HEADER_MENU_GUEST_TABS: Tab[] = [
+  {
+    id: "login",
+    route: ROUTES.AUTH.LOGIN,
+    name: "Login",
+    element: <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-500" />,
+  },
+  {
+    id: "regsiter",
+    route: ROUTES.AUTH.REGISTER,
+    name: "Register",
+    element: <InboxArrowDownIcon className="w-4 h-4 text-gray-500" />,
   },
 ];
 

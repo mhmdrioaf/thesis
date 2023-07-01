@@ -141,7 +141,7 @@ export default function RegisterForm() {
           </div>
         </div>
       </div>
-      <Button type="submit" disabled={isLoading}>
+      <Button type="submit" disabled={isLoading} fullWidth>
         {isLoading && "Registration in progress..."}
         {!isLoading && "Register"}
       </Button>
