@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import Button from "../buttons/Button";
 
 export default function BottomDrawer({
   drawerState,
@@ -37,12 +38,9 @@ export default function BottomDrawer({
             </Link>
           ))}
         {status === "authenticated" && (
-          <button
-            className="w-full py-4 rounded-md bg-red-950 text-white"
-            onClick={() => signOut()}
-          >
+          <Button variants="ERROR" onClick={() => signOut()}>
             Log out
-          </button>
+          </Button>
         )}
       </div>
     </div>

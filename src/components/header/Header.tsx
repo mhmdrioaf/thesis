@@ -14,6 +14,7 @@ import { HEADER_MENU_TABS, ROUTES } from "@/lib/constants";
 import { Bars2Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import HeaderMenu from "./Menu";
 import NavButtons from "../navs/NavButtons";
+import Button from "../buttons/Button";
 
 interface Props {
   homeTabs: Tab[];
@@ -177,13 +178,13 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                   ...marketplaceTabsWithoutAuth,
                   {
                     element: (
-                      <button
+                      <Button
                         key="sign out button"
-                        className="w-full px-2 py-2 bg-red-950 text-white"
                         onClick={() => signOut()}
+                        fullWidth
                       >
                         Sign out
-                      </button>
+                      </Button>
                     ),
                   },
                 ].concat(HEADER_MENU_TABS)

@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/buttons/Button";
 import { useSession } from "next-auth/react";
 
 export default function UserDetails({
@@ -28,7 +29,7 @@ export default function UserDetails({
                   <p>{session.user.name}</p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("name")}
+                    onClick={() => setModalShown("user-name")}
                   >
                     Change
                   </button>
@@ -44,7 +45,7 @@ export default function UserDetails({
                   <p>{session.user.email}</p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("email")}
+                    onClick={() => setModalShown("user-email")}
                   >
                     Change
                   </button>
@@ -60,7 +61,7 @@ export default function UserDetails({
                   <p>{session.user.username}</p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("username")}
+                    onClick={() => setModalShown("user-username")}
                   >
                     Change
                   </button>
@@ -82,7 +83,7 @@ export default function UserDetails({
                   </p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("birthdate")}
+                    onClick={() => setModalShown("user-birthdate")}
                   >
                     Change
                   </button>
@@ -100,7 +101,7 @@ export default function UserDetails({
                   </p>
                   <button
                     className="text-primary"
-                    onClick={() => setModalShown("phoneNumber")}
+                    onClick={() => setModalShown("user-phoneNumber")}
                   >
                     Change
                   </button>
@@ -115,12 +116,9 @@ export default function UserDetails({
             Please be aware that, this action would be deleting your account
             permanently, and cannot be restored.
           </p>
-          <button
-            onClick={() => setModalShown("deleteUser")}
-            className="w-max px-4 py-4 bg-red-950 text-white rounded-md"
-          >
+          <Button variants="ERROR" onClick={() => setModalShown("user-delete")}>
             Delete Account
-          </button>
+          </Button>
         </div>
       </div>
     );
