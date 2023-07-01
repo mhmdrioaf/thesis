@@ -2,9 +2,7 @@
 
 import Container from "@/components/container/Container";
 import Addresses from "@/components/forms/user/addresses/Addresses";
-import PaymentMethod from "@/components/forms/user/PaymentMethod";
 import PersonalInfo from "@/components/forms/user/personal-info/PersonalInfo";
-import Security from "@/components/forms/user/Security";
 import { PROFILE_PAGE_TABS } from "@/lib/constants";
 import { useState } from "react";
 
@@ -29,12 +27,6 @@ export default function UserProfile() {
 
       case "addresses":
         return <Addresses />;
-
-      case "payments":
-        return <PaymentMethod />;
-
-      case "security":
-        return <Security />;
 
       default:
         return (

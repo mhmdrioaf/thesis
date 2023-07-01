@@ -209,12 +209,4 @@ export const PROFILE_PAGE_TABS: Tab[] = [
     id: "addresses",
     name: "Addresses",
   },
-  {
-    id: "payments",
-    name: "Payment Method",
-  },
-  {
-    id: "security",
-    name: "Security",
-  },
 ];
