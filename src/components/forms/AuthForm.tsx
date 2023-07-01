@@ -7,6 +7,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "../inputs/TextField";
 import { ROUTES } from "@/lib/constants";
 import Snackbar from "../snackbars/Snackbar";
+import Button from "../buttons/Button";
 
 export default function AuthForm() {
   const [user, setUser] = useState<{ email: string; password: string }>({
@@ -99,14 +100,10 @@ export default function AuthForm() {
           )}
         </div>
       </div>
-      <button
-        type="submit"
-        className="w-full px-4 py-4 bg-primary text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
-        disabled={isLoading}
-      >
+      <Button type="submit" disabled={isLoading}>
         {isLoading && "Logging in..."}
         {!isLoading && "Login"}
-      </button>
+      </Button>
     </form>
   );
 }

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
 import TextField from "../inputs/TextField";
+import Button from "../buttons/Button";
 
 export default function AddProductForm() {
   const [newProduct, setNewProduct] = useState<NewProduct | null>(null);
@@ -216,18 +217,14 @@ export default function AddProductForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        className="w-full px-4 py-4 border-none outline-none rounded-md bg-primary bg-opacity-85 text-white hover:bg-opacity-100 disabled:bg-gray-400 disabled:text-gray-500"
-        disabled={isLoading}
-      >
+      <Button type="submit" disabled={isLoading}>
         {isLoading && (
           <div className="w-full flex gap-4 items-center justify-center">
             Uploading product...
           </div>
         )}
         {!isLoading && "Add product"}
-      </button>
+      </Button>
     </form>
   );
 }

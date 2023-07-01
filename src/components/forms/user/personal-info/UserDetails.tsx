@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/buttons/Button";
 import { useSession } from "next-auth/react";
 
 export default function UserDetails({
@@ -115,12 +116,9 @@ export default function UserDetails({
             Please be aware that, this action would be deleting your account
             permanently, and cannot be restored.
           </p>
-          <button
-            onClick={() => setModalShown("user-delete")}
-            className="w-max px-4 py-4 bg-red-950 text-white rounded-md"
-          >
+          <Button variants="ERROR" onClick={() => setModalShown("user-delete")}>
             Delete Account
-          </button>
+          </Button>
         </div>
       </div>
     );

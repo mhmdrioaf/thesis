@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 import Snackbar from "../snackbars/Snackbar";
 import { signIn } from "next-auth/react";
+import Button from "../buttons/Button";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -140,14 +141,10 @@ export default function RegisterForm() {
           </div>
         </div>
       </div>
-      <button
-        type="submit"
-        className="w-full px-4 py-4 bg-primary text-white outline-none border-none bg-opacity-95 hover:bg-opacity-100 rounded-md disabled:bg-gray-300 disabled:text-gray-500"
-        disabled={isLoading}
-      >
+      <Button type="submit" disabled={isLoading}>
         {isLoading && "Registration in progress..."}
         {!isLoading && "Register"}
-      </button>
+      </Button>
     </form>
   );
 }
