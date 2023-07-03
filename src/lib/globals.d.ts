@@ -25,13 +25,20 @@ type GlobalStateContextType = {
   };
 };
 
+type User = {
+  name: string;
+  username: string;
+  email: string;
+};
+
 type Product = {
-  id: string;
+  id: number;
   name: string;
   price: number;
-  imgURL: string;
-  category?: string;
-  desc?: string;
+  thumbnail: string;
+  images?: string[];
+  description: string;
+  user?: User[];
 };
 
 type NewProduct = {
