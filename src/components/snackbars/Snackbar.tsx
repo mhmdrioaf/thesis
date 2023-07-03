@@ -1,7 +1,8 @@
 "use client";
 
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 interface SnackbarVariant {
   PRIMARY: {
@@ -59,20 +60,36 @@ export default function Snackbar({
     },
   };
 
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pageMessage = searchParams.get("message");
+
+  const closeSnackbar = useCallback(() => {
+    setHide(true);
+    if (pageMessage) {
+      router.replace(pathname);
+    }
+  }, [pageMessage, pathname, router]);
+
   useEffect(() => {
     if (autoHide) {
-      setTimeout(() => {
-        setHide(true);
-      }, duration);
+      const handleCloseSnackbar = () => {
+        closeSnackbar();
+      };
+
+      const timeoutID = setTimeout(handleCloseSnackbar, duration);
+
+      return () => clearTimeout(timeoutID);
     }
-  }, [autoHide, duration]);
+  }, [autoHide, closeSnackbar, duration]);
 
   return !hide ? (
     <div className={snackbarStyles[variant].CONTAINER}>
       <p>{message}</p>
       <XMarkIcon
         className={snackbarStyles[variant].ICON}
-        onClick={() => setHide(true)}
+        onClick={() => closeSnackbar()}
       />
     </div>
   ) : null;
