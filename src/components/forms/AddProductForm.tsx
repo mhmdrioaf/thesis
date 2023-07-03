@@ -108,8 +108,23 @@ export default function AddProductForm() {
                 productResponse.status
               );
             } else {
-              setIsLoading(false);
-              router.push(ROUTES.MARKETPLACE + "?status=Added new product!");
+              const revalidate = await fetch(
+                process.env.NEXT_PUBLIC_API_REVALIDATE! + "?tag=products"
+              );
+
+              const response = await revalidate.json();
+
+              if (response.revalidated) {
+                router.push(
+                  ROUTES.MARKETPLACE +
+                    "?message=Successfully added new products!"
+                );
+              } else {
+                console.error(
+                  "An error occurred when revalidating data: ",
+                  response
+                );
+              }
             }
           }
         }
@@ -217,7 +232,7 @@ export default function AddProductForm() {
         />
       </div>
 
-      <Button type="submit" disabled={isLoading}>
+      <Button type="submit" disabled={isLoading} fullWidth>
         {isLoading && (
           <div className="w-full flex gap-4 items-center justify-center">
             Uploading product...
