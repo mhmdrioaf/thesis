@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/buttons/Button";
+import TextField from "@/components/inputs/TextField";
 import { useSession } from "next-auth/react";
 
 export default function UserDetails({
@@ -102,6 +103,30 @@ export default function UserDetails({
                   <button
                     className="text-primary"
                     onClick={() => setModalShown("user-phoneNumber")}
+                  >
+                    Change
+                  </button>
+                </td>
+              )}
+            </tr>
+            <tr>
+              <td className="py-4 pr-4">
+                <p>Password</p>
+              </td>
+              {session.user && (
+                <td className="flex py-4 gap-4 items-center">
+                  <TextField
+                    id="password"
+                    placeholder="Password..."
+                    name="password"
+                    type="password"
+                    className="border-none"
+                    defaultValue={"dummyPassword"}
+                    disabled
+                  />
+                  <button
+                    className="text-primary"
+                    onClick={() => setModalShown("security-password-change")}
                   >
                     Change
                   </button>

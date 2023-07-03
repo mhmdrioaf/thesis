@@ -100,7 +100,7 @@ export default function AuthForm() {
           )}
         </div>
       </div>
-      <Button type="submit" disabled={isLoading}>
+      <Button type="submit" disabled={isLoading} fullWidth>
         {isLoading && "Logging in..."}
         {!isLoading && "Login"}
       </Button>

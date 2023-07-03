@@ -10,7 +10,11 @@ import BottomDrawer from "../drawers/BottomDrawer";
 import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
-import { HEADER_MENU_TABS, ROUTES } from "@/lib/constants";
+import {
+  HEADER_MENU_GUEST_TABS,
+  HEADER_MENU_TABS,
+  ROUTES,
+} from "@/lib/constants";
 import { Bars2Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import HeaderMenu from "./Menu";
 import NavButtons from "../navs/NavButtons";
@@ -90,12 +94,51 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               </p>
             </div>
           </div>
-          <div className="w-fit flex justify-end justify-self-end">
+          <div className="w-fit flex justify-end gap-8 justify-self-end">
             <NavLink
               tabs={homeTabs.filter(
                 (tab: Tab) => tab.id !== "login" && tab.id !== "register"
               )}
             />
+            {status === "loading" ? (
+              <LoadingSpinner />
+            ) : (
+              <div
+                className="hidden lg:flex lg:flex-row lg:items-center px-2 py-2 rounded-xl gap-2 cursor-pointer hover:bg-gray-200 bg-opacity-75 relative"
+                onClick={() => setHeaderMenuOpen((prev) => !prev)}
+              >
+                {headerMenuOpen && (
+                  <HeaderMenu
+                    tabs={
+                      status === "authenticated"
+                        ? HEADER_MENU_TABS
+                        : HEADER_MENU_GUEST_TABS
+                    }
+                    style={conditionalHeaderMenuStyle}
+                  />
+                )}
+                <div className="w-12 h-12 rounded-full border border-gray-300 relative overflow-hidden">
+                  {session && session.user.image ? (
+                    <Image
+                      src={session.user.image}
+                      fill
+                      alt="profile picture"
+                      className="object-cover"
+                      loader={imageLoader}
+                    />
+                  ) : (
+                    <div className="w-full h-full grid place-items-center">
+                      <UserIcon className="w-4 h-4 text-gray-500" />
+                    </div>
+                  )}
+                </div>
+                {!headerMenuOpen ? (
+                  <Bars2Icon className="w-4 h-4 text-gray-500" />
+                ) : (
+                  <XMarkIcon className="w-4 h-4 text-gray-500" />
+                )}
+              </div>
+            )}
             <Hamburger
               onClick={() => drawerState.setDrawerOpen((prev) => !prev)}
             />
@@ -130,7 +173,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
               <>
                 {status === "authenticated" && (
                   <div
-                    className="hidden lg:flex lg:flex-row lg:items-center px-2 py-2 rounded-xl gap-2 cursor-pointer hover:bg-gray-300 bg-opacity-75 relative"
+                    className="hidden lg:flex lg:flex-row lg:items-center px-2 py-2 rounded-xl gap-2 cursor-pointer hover:bg-gray-200 bg-opacity-75 relative"
                     onClick={() => setHeaderMenuOpen((prev) => !prev)}
                   >
                     {headerMenuOpen && (

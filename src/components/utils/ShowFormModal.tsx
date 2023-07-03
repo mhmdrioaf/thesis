@@ -7,6 +7,7 @@ import { useState } from "react";
 import Button from "../buttons/Button";
 import { capitalizeFirstWord, phoneNumberConverter } from "@/lib/helper";
 import supabase from "@/lib/supabase";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 export type Inputs = {
   personalDetails: {
@@ -19,12 +20,21 @@ export type Inputs = {
   addressDetails: {
     address: Address;
   };
+  security: {
+    password: {
+      currentPassword: string;
+      newPassword: string;
+      newPasswordConfirmations: string;
+    };
+    PIN: number;
+  };
 };
 
 interface ComponentsProps {
   options: string | null;
   onClose: () => void;
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
+  setSuccess?: React.Dispatch<React.SetStateAction<string | null>>;
   formData?: Address | null | undefined;
 }
 
@@ -33,6 +43,7 @@ export default function ShowFormModal({
   onClose,
   setMessage,
   formData,
+  setSuccess,
 }: ComponentsProps) {
   const { handleSubmit, register, reset, watch } = useForm<Inputs>({
     mode: "onChange",
@@ -40,6 +51,7 @@ export default function ShowFormModal({
   const { data: session, update } = useSession();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onUserDetailsUpdate: SubmitHandler<Inputs> = async (data) => {
     setMessage(null);
@@ -111,6 +123,7 @@ export default function ShowFormModal({
       }
     }
   };
+
   const onAddressSubmit: SubmitHandler<Inputs> = async (data) => {
     setIsLoading(true);
     try {
@@ -203,6 +216,52 @@ export default function ShowFormModal({
     } catch (err) {
       console.error("An error occured when deleting an address: ", err);
       setIsLoading(false);
+    }
+  };
+
+  const onSecurityPasswordChanged: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true);
+    setMessage(null);
+    const dataToSubmit = data.security.password;
+
+    if (dataToSubmit.newPassword === dataToSubmit.newPasswordConfirmations) {
+      try {
+        if (session) {
+          const response = await fetch(
+            process.env.NEXT_PUBLIC_API_USER_UPDATE!,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: session.user.id,
+                currentPassword: dataToSubmit.currentPassword,
+                newPassword: dataToSubmit.newPassword,
+              }),
+            }
+          );
+
+          const updateResponse = await response.json();
+
+          if (!updateResponse.ok) {
+            setIsLoading(false);
+            setMessage(updateResponse.message);
+          } else {
+            if (setSuccess) {
+              setSuccess(
+                "Your password has been successfully changed. You can now login using your new password."
+              );
+            }
+            setIsLoading(false);
+            hideModal();
+            update();
+          }
+        }
+      } catch (err) {
+        setIsLoading(false);
+        console.error("An error occurred when updating user password: ", err);
+      }
+    } else {
+      setMessage("New password and new password confirmations doesn't match!");
     }
   };
 
@@ -412,6 +471,7 @@ export default function ShowFormModal({
           </ModalsContainer>
         );
       }
+
       case "address-create": {
         return (
           <ModalsContainer
@@ -555,6 +615,105 @@ export default function ShowFormModal({
                 fullWidth
               >
                 Cancel
+              </Button>
+            </form>
+          </ModalsContainer>
+        );
+      }
+
+      case "security-password-change": {
+        return (
+          <ModalsContainer
+            onClose={hideModal}
+            title="Change password"
+            description="Please use the password that are easy to remember"
+          >
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={handleSubmit(onSecurityPasswordChanged)}
+            >
+              <label htmlFor="current-password">Current password</label>
+              <div className="w-full flex flex-row gap-4 rounded-md border border-gray-300">
+                <input
+                  id="current-password"
+                  placeholder="Your current password..."
+                  type={showPassword ? "text" : "password"}
+                  className="w-full px-2 py-2 border-none"
+                  disabled={isLoading}
+                  required
+                  {...register("security.password.currentPassword")}
+                />
+                <div
+                  className="flex items-center justify-center px-2 py-2 cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="w-4 h-4 text-primary" />
+                  ) : (
+                    <EyeIcon className="w-4 h-4 text-primary" />
+                  )}
+                </div>
+              </div>
+
+              <label htmlFor="new-password">New password</label>
+              <div className="w-full flex flex-row gap-4 rounded-md border border-gray-300">
+                <input
+                  id="new-password"
+                  placeholder="Your new password..."
+                  type={showPassword ? "text" : "password"}
+                  className="w-full px-2 py-2 border-none"
+                  disabled={isLoading}
+                  required
+                  {...register("security.password.newPassword")}
+                />
+                <div
+                  className="flex items-center justify-center px-2 py-2 cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="w-4 h-4 text-primary" />
+                  ) : (
+                    <EyeIcon className="w-4 h-4 text-primary" />
+                  )}
+                </div>
+              </div>
+
+              <label htmlFor="new-password-confirmations">
+                New password confirmations
+              </label>
+              <div className="w-full flex flex-row gap-4 rounded-md border border-gray-300">
+                <input
+                  id="new-password-confirmations"
+                  placeholder="Your new password..."
+                  type={showPassword ? "text" : "password"}
+                  className="w-full px-2 py-2 border-none"
+                  disabled={isLoading}
+                  required
+                  {...register("security.password.newPasswordConfirmations")}
+                />
+                <div
+                  className="flex items-center justify-center px-2 py-2 cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="w-4 h-4 text-primary" />
+                  ) : (
+                    <EyeIcon className="w-4 h-4 text-primary" />
+                  )}
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                fullWidth
+                disabled={
+                  isLoading ||
+                  watch("security.password.newPassword") !==
+                    watch("security.password.newPasswordConfirmations") ||
+                  watch("security.password.currentPassword")?.length === 0
+                }
+              >
+                Save
               </Button>
             </form>
           </ModalsContainer>
