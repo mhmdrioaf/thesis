@@ -3,6 +3,7 @@ import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
   BookmarkIcon,
+  BuildingStorefrontIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   UserIcon,
@@ -70,41 +71,6 @@ export const DUMMY_MARKETPLACE_CAROUSEL_ASSETS: CarouselAsset[] = [
   },
 ];
 
-export const DUMMY_MARKETPLACE_PRODUCTS: Product[] = [
-  {
-    id: "prod01",
-    name: "Product 1",
-    price: 50000,
-    category: "Ruminansia",
-    desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum iure in accusantium quia voluptatum optio?`,
-    imgURL: "/product-category-1.jpg",
-  },
-  {
-    id: "prod02",
-    name: "Product 2",
-    price: 24000,
-    category: "Hortikultura",
-    desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum iure in accusantium quia voluptatum optio?`,
-    imgURL: "/product-category-2.jpg",
-  },
-  {
-    id: "prod03",
-    name: "Product 3",
-    price: 32000,
-    category: "Ruminansia",
-    desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum iure in accusantium quia voluptatum optio?`,
-    imgURL: "/product-category-3.jpg",
-  },
-  {
-    id: "prod04",
-    name: "Product 4",
-    price: 12500,
-    category: "Florikultura",
-    desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum iure in accusantium quia voluptatum optio?`,
-    imgURL: "/product-category-1.jpg",
-  },
-];
-
 export const SOCIAL_MEDIA_LIST: SocialMedia[] = [
   {
     id: "facebook",
@@ -140,8 +106,7 @@ export const ROUTES = {
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
   },
-  PRODUCT_DETAIL: (productId: string | number) =>
-    `/marketplace/product/${productId}`,
+  PRODUCT_DETAIL: (productId: string | number) => `/product/${productId}`,
 
   USER: {
     PROFILE: "/user/profile",
@@ -186,6 +151,12 @@ export const HEADER_MENU_TABS: Tab[] = [
     route: ROUTES.USER.SETTINGS,
     name: "Settings",
     element: <Cog6ToothIcon className="w-4 h-4 text-gray-500" />,
+  },
+  {
+    id: "seller_dashboard",
+    route: ROUTES.PRODUCTS.CREATE,
+    name: "Seller Dashboard",
+    element: <BuildingStorefrontIcon className="w-4 h-4 text-gray-500" />,
   },
   {
     id: "logout",
