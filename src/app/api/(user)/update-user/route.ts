@@ -16,16 +16,16 @@ async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
   try {
-    const user = await db.user.update({
+    const user = await db.customer.update({
       where: {
         id: body.id,
       },
       data: {
         name: body.name,
-        image: body.image,
+        imageURL: body.image,
         username: body.username,
         email: body.email,
-        birthdate: body.birthdate,
+        dateOfBirth: body.birthdate,
         phoneNumber: body.phoneNumber,
       },
     });

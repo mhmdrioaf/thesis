@@ -38,6 +38,7 @@ type NewProduct = {
   name: string;
   description: string;
   price: number;
+  stock: number;
 };
 
 type NewUser = {
@@ -53,7 +54,7 @@ type Address = {
   note?: string;
   fullAddress: string;
   receiverName: string;
-  receiverPhone: string;
+  receiverPhoneNumber: string;
   receiverId: string;
-  mainAddressFor?: string;
+  primaryAddressFor?: string;
 };

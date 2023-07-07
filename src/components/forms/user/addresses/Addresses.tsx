@@ -63,20 +63,20 @@ export default function Addresses() {
       return sortedUserAddress.map((address: Address) => (
         <CardContainer
           key={address.id}
-          active={address.mainAddressFor === user.id}
+          active={address.primaryAddressFor === user.id}
         >
           <div className="w-full flex flex-row justify-between items-center">
             <div className="w-full flex flex-col gap-2">
               <div className="flex flex-row gap-1 items-center">
                 <b>{address.label}</b>
-                {address.mainAddressFor === user.id && (
+                {address.primaryAddressFor === user.id && (
                   <div className="px-1 py-1 bg-neutral-700 text-white rounded-md grid place-items-center">
                     Main
                   </div>
                 )}
               </div>
               <p>{address.receiverName}</p>
-              <p>{address.receiverPhone}</p>
+              <p>{address.receiverPhoneNumber}</p>
               <p>{address.fullAddress}</p>
               <div className="flex gap-4 items-center text-sm font-semibold">
                 <button
@@ -88,7 +88,7 @@ export default function Addresses() {
                   Change address
                 </button>
                 <div className="w-px h-auto bg-primary bg-opacity-10" />
-                {address.mainAddressFor !== user.id && (
+                {address.primaryAddressFor !== user.id && (
                   <>
                     <button onClick={() => updatePrimaryAddress(address.id!)}>
                       Make this as a main address
@@ -106,7 +106,7 @@ export default function Addresses() {
                 </button>
               </div>
             </div>
-            {address.mainAddressFor === user.id && (
+            {address.primaryAddressFor === user.id && (
               <CheckIcon className="w-8 h-8" />
             )}
           </div>

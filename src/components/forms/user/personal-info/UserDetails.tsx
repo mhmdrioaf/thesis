@@ -75,9 +75,9 @@ export default function UserDetails({
               {session.user && (
                 <td className="flex py-4 gap-4 items-center">
                   <p>
-                    {session.user.birthdate
+                    {session.user.dateOfBirth
                       ? new Date(
-                          `${session.user.birthdate}`
+                          `${session.user.dateOfBirth}`
                         ).toLocaleDateString()
                       : "Not setted yet"}
                   </p>

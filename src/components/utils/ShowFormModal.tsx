@@ -446,7 +446,7 @@ export default function ShowFormModal({
                 id="receiverPhone"
                 className="px-2 py-2 border border-gray-300 rounded-md"
                 type="number"
-                {...register("addressDetails.address.receiverPhone", {
+                {...register("addressDetails.address.receiverPhoneNumber", {
                   setValueAs: (v) => phoneNumberConverter(v),
                 })}
                 required
@@ -504,8 +504,8 @@ export default function ShowFormModal({
                 id="receiverPhone"
                 className="px-2 py-2 border border-gray-300 rounded-md"
                 type="number"
-                defaultValue={formData?.receiverPhone}
-                {...register("addressDetails.address.receiverPhone", {
+                defaultValue={formData?.receiverPhoneNumber}
+                {...register("addressDetails.address.receiverPhoneNumber", {
                   setValueAs: (v) => phoneNumberConverter(v),
                 })}
                 required

@@ -70,8 +70,9 @@ model Address {
   fullAddress         String
   receiverName        String
   receiverPhoneNumber BigInt
+  receiverId          String
   primaryAddressFor   String?
-  customer            Customer? @relation(fields: [primaryAddressFor], references: [id], onDelete: Cascade)
+  customer            Customer? @relation(fields: [receiverId], references: [id], onDelete: Cascade)
 }
 
 model CustomerOrder {
