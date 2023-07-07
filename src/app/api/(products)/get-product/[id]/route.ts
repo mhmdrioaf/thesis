@@ -12,8 +12,7 @@ async function handler(
       id: parseInt(id),
     },
     include: {
-      user: true,
-      ratings: true,
+      seller: true,
     },
   });
 
