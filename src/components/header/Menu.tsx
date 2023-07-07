@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 interface PageProps {
   tabs: Tab[];
@@ -9,6 +10,13 @@ interface PageProps {
 }
 
 export default function HeaderMenu({ tabs, style }: PageProps) {
+  const { update } = useSession();
+
+  function logoutHandler() {
+    signOut();
+    update();
+  }
+
   return (
     <div
       className={`w-max py-8 bg-white flex flex-col gap-8 items-start rounded-ee-lg rounded-es-lg absolute left-1/2 -translate-x-1/2 top-20 ${style}`}
@@ -28,7 +36,7 @@ export default function HeaderMenu({ tabs, style }: PageProps) {
       {tabs
         .filter((tab: Tab) => tab.route === undefined)
         .map((tab: Tab) => (
-          <div key="signout button" onClick={() => signOut()}>
+          <div key="signout button" onClick={logoutHandler}>
             {tab.element}
           </div>
         ))}

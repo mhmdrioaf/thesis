@@ -46,6 +46,7 @@ export const authOptions: NextAuthOptions = {
         session.user.image = token.picture;
         session.user.dateOfBirth = token.dateOfBirth;
         session.user.phoneNumber = token.phoneNumber;
+        session.user.role = token.role;
       }
 
       return session;
@@ -71,6 +72,7 @@ export const authOptions: NextAuthOptions = {
           picture: customer.imageURL,
           phoneNumber: customer.phoneNumber?.toString(),
           username: customer.username,
+          role: "CUSTOMER",
         };
       } else if (seller) {
         return {
@@ -80,6 +82,7 @@ export const authOptions: NextAuthOptions = {
           picture: seller.imageURL,
           phoneNumber: seller.phoneNumber?.toString(),
           username: seller.username,
+          role: "SELLER",
         };
       } else if (administrator) {
         return {
@@ -88,6 +91,7 @@ export const authOptions: NextAuthOptions = {
           email: administrator.email,
           picture: administrator.imageURL,
           username: administrator.username,
+          role: "ADMINISTRATOR",
         };
       } else {
         token.id = user!.id;

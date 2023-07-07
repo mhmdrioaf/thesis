@@ -111,6 +111,9 @@ export const ROUTES = {
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
   },
+  SELLER: {
+    DASHBOARD: "#",
+  },
   PRODUCT_DETAIL: (productId: string | number) => `/product/${productId}`,
 
   USER: {
@@ -158,12 +161,6 @@ export const HEADER_MENU_TABS: Tab[] = [
     element: <Cog6ToothIcon className="w-4 h-4 text-gray-500" />,
   },
   {
-    id: "seller_dashboard",
-    route: ROUTES.PRODUCTS.CREATE,
-    name: "Seller Dashboard",
-    element: <BuildingStorefrontIcon className="w-4 h-4 text-gray-500" />,
-  },
-  {
     id: "logout",
     name: "Log out",
     element: (
@@ -190,6 +187,28 @@ export const HEADER_MENU_GUEST_TABS: Tab[] = [
     route: ROUTES.AUTH.REGISTER,
     name: "Register",
     element: <InboxArrowDownIcon className={menuIconStyles} />,
+  },
+];
+
+export const HEADER_MENU_SELLER_TABS: Tab[] = [
+  {
+    id: "dashboard",
+    route: ROUTES.SELLER.DASHBOARD,
+    name: "Dashboard",
+    element: <BuildingStorefrontIcon className={menuIconStyles} />,
+  },
+  {
+    id: "logout",
+    name: "Log out",
+    element: (
+      <div
+        key="logout button"
+        className="w-full px-4 flex flex-row gap-2 items-center text-gray-500 hover:underline"
+      >
+        <ArrowRightOnRectangleIcon className="w-4 h-4" />
+        <p className="text-500">Log out</p>
+      </div>
+    ),
   },
 ];
 

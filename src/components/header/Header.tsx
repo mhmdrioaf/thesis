@@ -12,6 +12,7 @@ import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
 import {
   HEADER_MENU_GUEST_TABS,
+  HEADER_MENU_SELLER_TABS,
   HEADER_MENU_TABS,
   ROUTES,
 } from "@/lib/constants";
@@ -60,6 +61,23 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
     return `${src}?/w=${width}&q=${quality || 75}`;
   }
 
+  function roleValidation(role: string) {
+    if (status === "authenticated") {
+      switch (role) {
+        case "CUSTOMER":
+          return HEADER_MENU_TABS;
+        case "SELLER":
+          return HEADER_MENU_SELLER_TABS;
+        case "ADMINISTRATOR":
+          return HEADER_MENU_SELLER_TABS;
+        default:
+          return [];
+      }
+    } else {
+      return HEADER_MENU_GUEST_TABS;
+    }
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollValue(window.scrollY);
@@ -67,10 +85,12 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
 
     window.addEventListener("scroll", handleScroll);
 
+    console.log(session?.user.role);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [session]);
   return (
     <div className={headerStyle}>
       {pathname !== ROUTES.MARKETPLACE && (
@@ -111,7 +131,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                   <HeaderMenu
                     tabs={
                       status === "authenticated"
-                        ? HEADER_MENU_TABS
+                        ? roleValidation(session.user.role)
                         : HEADER_MENU_GUEST_TABS
                     }
                     style={conditionalHeaderMenuStyle}
@@ -178,7 +198,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                   >
                     {headerMenuOpen && (
                       <HeaderMenu
-                        tabs={HEADER_MENU_TABS}
+                        tabs={roleValidation(session.user.role)}
                         style={conditionalHeaderMenuStyle}
                       />
                     )}
