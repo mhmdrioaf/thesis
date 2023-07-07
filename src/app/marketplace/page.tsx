@@ -3,7 +3,6 @@ import Carousel from "@/components/carousel/Carousel";
 import Container from "@/components/container/Container";
 import SectionTitle from "@/components/section-title/SectionTitle";
 import ShowMessage from "@/components/utils/ShowMessage";
-import { getProducts } from "@/lib/api";
 import {
   ROUTES,
   DUMMY_MARKETPLACE_CAROUSEL_ASSETS as dummyAssets,
@@ -13,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Marketplace() {
-  const products: Product[] = await getProducts();
+  const products: Product[] = [];
 
   return (
     <Container className="w-full min-h-screen flex flex-col gap-8">
