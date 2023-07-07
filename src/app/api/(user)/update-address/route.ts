@@ -53,7 +53,7 @@ async function handler(request: NextRequest) {
           fullAddress: body.address.fullAddress,
           label: body.address.label,
           receiverName: body.address.receiverName,
-          receiverPhoneNumber: parseInt(body.address.receiverPhone),
+          receiverPhoneNumber: parseInt(body.address.receiverPhoneNumber),
         },
       });
 
