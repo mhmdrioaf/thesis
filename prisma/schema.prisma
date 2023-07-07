@@ -7,54 +7,117 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  username      String?   @unique
-  password      String?
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  birthdate     DateTime?
-  phoneNumber   BigInt?
-  addresses     Address[]
-  products      Product[]
-  ratedProducts Rating[]
+model Customer {
+  id          String          @id @default(cuid())
+  name        String
+  email       String          @unique
+  username    String          @unique
+  password    String
+  dateOfBirth DateTime?
+  imageURL    String?
+  phoneNumber BigInt?
+  addresses   Address[]
+  orders      CustomerOrder[]
+  sellerOrder SellerOrder[]
 
-  @@unique([email, username], name: "user_identifier")
+  @@unique([username, email], name: "customer_identifier")
+}
+
+model Seller {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  username     String        @unique
+  password     String
+  phoneNumber  BigInt?
+  storeAddress String?
+  imageURL     String?
+  products     Product[]
+  orders       SellerOrder[]
+  token        String
+
+  @@unique([username, email], name: "seller_identifier")
+}
+
+model Administrator {
+  id       String  @id @default(cuid())
+  name     String
+  username String  @unique
+  email    String  @unique
+  password String
+  imageURL String?
+  token    String
+
+  @@unique([username, email], name: "admin_identifier")
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  price       Int
-  thumbnail   String?
-  images      String[]
-  description String
-  user        User?    @relation(fields: [seller], references: [id], onDelete: Cascade)
-  ratings     Rating[]
-  seller      String?
-}
-
-model Rating {
-  id                 String   @id @default(cuid())
-  commentedAt        DateTime @default(now())
-  commentatorId      String
-  commentValue       String
-  commentedProductId Int
-  ratingValue        Float
-  user               User?    @relation(fields: [commentatorId], references: [id], onDelete: Cascade)
-  product            Product? @relation(fields: [commentedProductId], references: [id], onDelete: Cascade)
+  id           Int           @id @default(autoincrement())
+  name         String
+  price        Int
+  stock        Int
+  thumbnail    String?
+  images       String[]
+  descriptions String?
+  sellerId     String?
+  seller       Seller?       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  status       ProductStatus @default(SUBMITTED)
 }
 
 model Address {
-  id             String  @id @default(cuid())
-  label          String
-  note           String?
-  fullAddress    String
-  receiverName   String
-  receiverPhone  BigInt
-  receiverId     String
-  mainAddressFor String?
-  receiver       User?   @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  id                  String    @id @default(cuid())
+  label               String
+  fullAddress         String
+  receiverName        String
+  receiverPhoneNumber BigInt
+  primaryAddressFor   String?
+  customer            Customer? @relation(fields: [primaryAddressFor], references: [id], onDelete: Cascade)
+}
+
+model CustomerOrder {
+  id              String       @id @default(cuid())
+  customer        Customer     @relation(fields: [customerID], references: [id])
+  shippingAddress String
+  customerID      String       @unique
+  dateOfOrder     DateTime     @default(now())
+  status          OrderStatus  @default(PENDING)
+  totalPrice      Int
+  orderItem       OrderItem[]
+  seller          SellerOrder?
+}
+
+model OrderItem {
+  orderItemID String        @id @default(cuid())
+  productID   String        @unique
+  quantity    Int
+  order       CustomerOrder @relation(fields: [orderID], references: [id])
+  orderID     String
+}
+
+model SellerOrder {
+  id              String         @id @default(cuid())
+  dateOfOrder     DateTime       @default(now())
+  seller          Seller         @relation(fields: [sellerID], references: [id])
+  customer        Customer       @relation(fields: [customerID], references: [id])
+  order           CustomerOrder? @relation(fields: [customerOrderID], references: [id])
+  sellerID        String
+  customerID      String         @unique
+  customerOrderID String         @unique
+  status          OrderStatus    @default(PENDING)
+}
+
+enum ProductStatus {
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING
+  ONHOLD
+  PAID
+  PACKED
+  SHIPPED
+  CLOSED
+  FAILED
 }
