@@ -16,6 +16,7 @@ export type Inputs = {
     email: string;
     birthdate: Date;
     phoneNumber: number;
+    storeAddress?: string;
   };
   addressDetails: {
     address: Address;
@@ -295,7 +296,8 @@ export default function ShowFormModal({
 
   if (session) {
     switch (options) {
-      case "user-name": {
+      case "user-name":
+      case "seller-name": {
         return (
           <ModalsContainer
             title="Change name"
@@ -321,7 +323,8 @@ export default function ShowFormModal({
           </ModalsContainer>
         );
       }
-      case "user-email": {
+      case "user-email":
+      case "seller-email": {
         return (
           <ModalsContainer
             title="Change email"
@@ -347,7 +350,8 @@ export default function ShowFormModal({
           </ModalsContainer>
         );
       }
-      case "user-username": {
+      case "user-username":
+      case "seller-username": {
         return (
           <ModalsContainer
             title="Change username"
@@ -400,7 +404,8 @@ export default function ShowFormModal({
           </ModalsContainer>
         );
       }
-      case "user-phoneNumber": {
+      case "user-phoneNumber":
+      case "seller-phoneNumber": {
         return (
           <ModalsContainer
             title="Change phone number"
@@ -429,7 +434,8 @@ export default function ShowFormModal({
           </ModalsContainer>
         );
       }
-      case "user-delete": {
+      case "user-delete":
+      case "seller-delete": {
         return (
           <ModalsContainer
             title="Delete account"
@@ -621,7 +627,8 @@ export default function ShowFormModal({
         );
       }
 
-      case "security-password-change": {
+      case "security-password-change":
+      case "seller-password-change": {
         return (
           <ModalsContainer
             onClose={hideModal}
@@ -713,6 +720,33 @@ export default function ShowFormModal({
                   watch("security.password.currentPassword")?.length === 0
                 }
               >
+                Save
+              </Button>
+            </form>
+          </ModalsContainer>
+        );
+      }
+
+      case "store-address": {
+        return (
+          <ModalsContainer
+            title="Change store address"
+            description="Please enter your current store address"
+            onClose={hideModal}
+          >
+            <form
+              onSubmit={handleSubmit(onUserDetailsUpdate)}
+              className="flex flex-col gap-4"
+            >
+              <label htmlFor="store-address">Store address</label>
+              <input
+                className="px-2 py-2 border border-gray-300 rounded-md"
+                type="text"
+                id="store-address"
+                defaultValue={session.user.storeAddress ?? "Not setted yet"}
+                {...register("personalDetails.storeAddress")}
+              />
+              <Button type="submit" disabled={isLoading} fullWidth>
                 Save
               </Button>
             </form>
