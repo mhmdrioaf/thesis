@@ -52,26 +52,47 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-      const dbUser = await db.customer.findFirst({
-        where: {
-          email: token.email!,
-        },
+      const customer = await db.customer.findFirst({
+        where: { email: token.email! },
+      });
+      const seller = await db.seller.findFirst({
+        where: { email: token.email! },
+      });
+      const administrator = await db.administrator.findFirst({
+        where: { email: token.email! },
       });
 
-      if (!dbUser) {
+      if (customer) {
+        return {
+          id: customer.id,
+          name: customer.name,
+          dateOfBirth: customer.dateOfBirth,
+          email: customer.email,
+          picture: customer.imageURL,
+          phoneNumber: customer.phoneNumber?.toString(),
+          username: customer.username,
+        };
+      } else if (seller) {
+        return {
+          id: seller.id,
+          name: seller.name,
+          email: seller.email,
+          picture: seller.imageURL,
+          phoneNumber: seller.phoneNumber?.toString(),
+          username: seller.username,
+        };
+      } else if (administrator) {
+        return {
+          id: administrator.id,
+          name: administrator.name,
+          email: administrator.email,
+          picture: administrator.imageURL,
+          username: administrator.username,
+        };
+      } else {
         token.id = user!.id;
         return token;
       }
-
-      return {
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        picture: dbUser.imageURL,
-        username: dbUser.username,
-        dateOfBirth: dbUser.dateOfBirth,
-        phoneNumber: dbUser.phoneNumber?.toString(),
-      };
     },
   },
   pages: {
