@@ -10,7 +10,7 @@ interface RequestBody {
 const handler = async (request: NextRequest) => {
   const body: RequestBody = await request.json();
 
-  const user = await db.user.findFirst({
+  const user = await db.customer.findFirst({
     where: {
       OR: [
         {

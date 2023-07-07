@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.username = token.username;
         session.user.image = token.picture;
-        session.user.birthdate = token.birthdate;
+        session.user.dateOfBirth = token.dateOfBirth;
         session.user.phoneNumber = token.phoneNumber;
       }
 
@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-      const dbUser = await db.user.findFirst({
+      const dbUser = await db.customer.findFirst({
         where: {
           email: token.email!,
         },
@@ -67,9 +67,9 @@ export const authOptions: NextAuthOptions = {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
-        picture: dbUser.image,
+        picture: dbUser.imageURL,
         username: dbUser.username,
-        birthdate: dbUser.birthdate,
+        dateOfBirth: dbUser.dateOfBirth,
         phoneNumber: dbUser.phoneNumber?.toString(),
       };
     },

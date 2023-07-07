@@ -9,7 +9,7 @@ interface RequestBody {
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
-  const currentUser = await db.user.findFirst({
+  const currentUser = await db.customer.findFirst({
     where: {
       username: body.username,
     },
@@ -20,7 +20,7 @@ async function handler(request: NextRequest) {
 
   if (currentUser && body.id === currentUser.id) {
     try {
-      const user = await db.user.delete({
+      const user = await db.customer.delete({
         where: {
           id: currentUser.id,
         },

@@ -17,7 +17,7 @@ async function handler(request: NextRequest) {
         },
       },
       data: {
-        mainAddressFor: null,
+        primaryAddressFor: null,
       },
     });
 
@@ -28,7 +28,7 @@ async function handler(request: NextRequest) {
             id: body.address.id,
           },
           data: {
-            mainAddressFor: body.userId,
+            primaryAddressFor: body.userId,
           },
         });
 
@@ -53,7 +53,7 @@ async function handler(request: NextRequest) {
           fullAddress: body.address.fullAddress,
           label: body.address.label,
           receiverName: body.address.receiverName,
-          receiverPhone: parseInt(body.address.receiverPhone),
+          receiverPhoneNumber: parseInt(body.address.receiverPhoneNumber),
         },
       });
 
