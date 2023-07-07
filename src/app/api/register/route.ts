@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 import { Prisma } from "@prisma/client";
 
 interface RequestBody {
-  username?: string;
+  username: string;
   name: string;
   email: string;
   password: string;
@@ -14,7 +14,7 @@ const handler = async (request: NextRequest) => {
   const body: RequestBody = await request.json();
 
   try {
-    const newUser = await db.user.create({
+    const newUser = await db.customer.create({
       data: {
         username: body.username,
         name: body.name,

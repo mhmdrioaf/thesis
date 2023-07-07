@@ -29,7 +29,7 @@ export function capitalizeFirstWord(words: string) {
 }
 
 export function sortAddress(address: Address) {
-  if (address.mainAddressFor !== null) {
+  if (address.primaryAddressFor !== null) {
     return -1;
   } else {
     return 0;

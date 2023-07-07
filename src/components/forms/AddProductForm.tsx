@@ -218,6 +218,21 @@ export default function AddProductForm() {
       </div>
 
       <div className={inputStyles}>
+        <label htmlFor="stock" className={labelStyles}>
+          Available Stock
+        </label>
+        <TextField
+          type="number"
+          name="stock"
+          id="stock"
+          onChange={inputChangeHandler}
+          defaultValue={1}
+          required
+          disabled={isLoading}
+        />
+      </div>
+
+      <div className={inputStyles}>
         <label htmlFor="description" className={labelStyles}>
           Product descriptions
         </label>

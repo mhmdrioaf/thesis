@@ -10,7 +10,7 @@ interface RequestBody {
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
-  const user = await db.user.findFirst({
+  const customer = await db.customer.findFirst({
     where: {
       id: body.userId,
     },
@@ -19,15 +19,15 @@ async function handler(request: NextRequest) {
     },
   });
 
-  const userAddressLength = user!.addresses.length;
+  const userAddressLength = customer!.addresses.length;
   const newAddress = await db.address.create({
     data: {
       fullAddress: body.address.fullAddress,
       label: body.address.label,
       receiverName: body.address.receiverName,
-      receiverPhone: body.address.receiverPhone,
+      receiverPhoneNumber: body.address.receiverPhoneNumber,
       receiverId: body.address.receiverId,
-      mainAddressFor: userAddressLength <= 0 ? body.userId : null,
+      primaryAddressFor: userAddressLength <= 0 ? body.userId : null,
     },
   });
 

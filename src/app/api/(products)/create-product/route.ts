@@ -7,12 +7,13 @@ interface RequestBody {
   description: string;
   seller: string;
   thumbnail?: string;
+  stock: number;
 }
 
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
-  const verifySeller = await db.user.findFirst({
+  const verifySeller = await db.seller.findFirst({
     where: {
       id: body.seller,
     },
@@ -22,10 +23,11 @@ async function handler(request: NextRequest) {
     const newProduct = await db.product.create({
       data: {
         name: body.name,
-        description: body.description,
+        descriptions: body.description,
         price: body.price,
-        seller: body.seller,
+        sellerId: body.seller,
         thumbnail: body.thumbnail,
+        stock: body.stock,
       },
     });
 
