@@ -19,7 +19,7 @@ async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
   if (body.currentPassword && body.newPassword) {
-    const currentUser = await db.user.findFirst({
+    const currentUser = await db.customer.findFirst({
       where: {
         id: body.id,
       },
@@ -29,7 +29,7 @@ async function handler(request: NextRequest) {
       currentUser &&
       (await bcrypt.compare(body.currentPassword, currentUser.password!))
     ) {
-      const updateUserPassword = await db.user.update({
+      const updateUserPassword = await db.customer.update({
         where: {
           id: body.id,
         },
