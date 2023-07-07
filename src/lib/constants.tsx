@@ -112,7 +112,7 @@ export const ROUTES = {
     REGISTER: "/auth/register",
   },
   SELLER: {
-    DASHBOARD: "#",
+    DASHBOARD: "/seller/dashboard",
   },
   PRODUCT_DETAIL: (productId: string | number) => `/product/${productId}`,
 
@@ -230,7 +230,7 @@ export const SELLER_PAGE_TABS: Tab[] = [
     element: <NewspaperIcon className={menuIconStyles} />,
   },
   {
-    id: "products-list",
+    id: "products",
     name: "Products",
     element: <InboxStackIcon className={menuIconStyles} />,
   },
