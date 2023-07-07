@@ -6,8 +6,13 @@ import {
   BuildingStorefrontIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
+  InboxStackIcon,
+  NewspaperIcon,
+  QueueListIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
+
+const menuIconStyles = "w-4 h-4 text-gray-500";
 
 // Dummies data
 const socialMediaData = {
@@ -178,13 +183,13 @@ export const HEADER_MENU_GUEST_TABS: Tab[] = [
     id: "login",
     route: ROUTES.AUTH.LOGIN,
     name: "Login",
-    element: <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-500" />,
+    element: <ArrowLeftOnRectangleIcon className={menuIconStyles} />,
   },
   {
     id: "regsiter",
     route: ROUTES.AUTH.REGISTER,
     name: "Register",
-    element: <InboxArrowDownIcon className="w-4 h-4 text-gray-500" />,
+    element: <InboxArrowDownIcon className={menuIconStyles} />,
   },
 ];
 
@@ -196,5 +201,23 @@ export const PROFILE_PAGE_TABS: Tab[] = [
   {
     id: "addresses",
     name: "Addresses",
+  },
+];
+
+export const SELLER_PAGE_TABS: Tab[] = [
+  {
+    id: "dashboard",
+    name: "Dashboard",
+    element: <NewspaperIcon className={menuIconStyles} />,
+  },
+  {
+    id: "products-list",
+    name: "Products",
+    element: <InboxStackIcon className={menuIconStyles} />,
+  },
+  {
+    id: "orders",
+    name: "Orders",
+    element: <QueueListIcon className={menuIconStyles} />,
   },
 ];

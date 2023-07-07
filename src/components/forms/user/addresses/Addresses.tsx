@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { sortAddress } from "@/lib/helper";
 import ShowFormModal from "@/components/utils/ShowFormModal";
 import Snackbar from "@/components/snackbars/Snackbar";
+import { getUserById } from "@/lib/api";
 
 interface User {
   id: string;
@@ -54,96 +55,92 @@ export default function Addresses() {
   }
 
   function showAddresses() {
-    const userAddress = user?.addresses;
+    if (user) {
+      const userAddress = user.addresses;
 
-    if (userAddress && userAddress.length > 0) {
-      const sortedUserAddress = userAddress.sort((address: Address) =>
-        sortAddress(address)
-      );
-      return sortedUserAddress.map((address: Address) => (
-        <CardContainer
-          key={address.id}
-          active={address.primaryAddressFor === user.id}
-        >
-          <div className="w-full flex flex-row justify-between items-center">
-            <div className="w-full flex flex-col gap-2">
-              <div className="flex flex-row gap-1 items-center">
-                <b>{address.label}</b>
-                {address.primaryAddressFor === user.id && (
-                  <div className="px-1 py-1 bg-neutral-700 text-white rounded-md grid place-items-center">
-                    Main
-                  </div>
-                )}
+      if (userAddress && userAddress.length > 0) {
+        const sortedUserAddress = userAddress.sort((address: Address) =>
+          sortAddress(address)
+        );
+        return sortedUserAddress.map((address: Address) => (
+          <CardContainer
+            key={address.id}
+            active={address.primaryAddressFor === user.id}
+          >
+            <div className="w-full flex flex-row justify-between items-center">
+              <div className="w-full flex flex-col gap-2">
+                <div className="flex flex-row gap-1 items-center">
+                  <b>{address.label}</b>
+                  {address.primaryAddressFor === user.id && (
+                    <div className="px-1 py-1 bg-neutral-700 text-white rounded-md grid place-items-center">
+                      Main
+                    </div>
+                  )}
+                </div>
+                <p>{address.receiverName}</p>
+                <p>{address.receiverPhoneNumber}</p>
+                <p>{address.fullAddress}</p>
+                <div className="flex gap-4 items-center text-sm font-semibold">
+                  <button
+                    onClick={() => {
+                      setModalShown("address-update");
+                      setAddressToUpdate(address);
+                    }}
+                  >
+                    Change address
+                  </button>
+                  <div className="w-px h-auto bg-primary bg-opacity-10" />
+                  {address.primaryAddressFor !== user.id && (
+                    <>
+                      <button onClick={() => updatePrimaryAddress(address.id!)}>
+                        Make this as a main address
+                      </button>
+                      <div className="w-px h-auto bg-primary bg-opacity-10" />
+                    </>
+                  )}
+                  <button
+                    onClick={() => {
+                      setModalShown("address-delete");
+                      setAddressToUpdate(address);
+                    }}
+                  >
+                    Delete address
+                  </button>
+                </div>
               </div>
-              <p>{address.receiverName}</p>
-              <p>{address.receiverPhoneNumber}</p>
-              <p>{address.fullAddress}</p>
-              <div className="flex gap-4 items-center text-sm font-semibold">
-                <button
-                  onClick={() => {
-                    setModalShown("address-update");
-                    setAddressToUpdate(address);
-                  }}
-                >
-                  Change address
-                </button>
-                <div className="w-px h-auto bg-primary bg-opacity-10" />
-                {address.primaryAddressFor !== user.id && (
-                  <>
-                    <button onClick={() => updatePrimaryAddress(address.id!)}>
-                      Make this as a main address
-                    </button>
-                    <div className="w-px h-auto bg-primary bg-opacity-10" />
-                  </>
-                )}
-                <button
-                  onClick={() => {
-                    setModalShown("address-delete");
-                    setAddressToUpdate(address);
-                  }}
-                >
-                  Delete address
-                </button>
-              </div>
+              {address.primaryAddressFor === user.id && (
+                <CheckIcon className="w-8 h-8" />
+              )}
             </div>
-            {address.primaryAddressFor === user.id && (
-              <CheckIcon className="w-8 h-8" />
-            )}
+          </CardContainer>
+        ));
+      }
+
+      if (isLoading) {
+        return (
+          <div className="w-full grid place-items-center">
+            <LoadingSpinner />
           </div>
-        </CardContainer>
-      ));
-    }
+        );
+      }
 
-    if (isLoading) {
-      return (
-        <div className="w-full grid place-items-center">
-          <LoadingSpinner />
-        </div>
-      );
-    }
-
-    if (!userAddress || userAddress.length <= 0) {
-      return (
-        <div className="grid place-items-center text-gray-400">
-          <p>No address added yet...</p>
-        </div>
-      );
+      if (!userAddress || userAddress.length <= 0) {
+        return (
+          <div className="grid place-items-center text-gray-400">
+            <p>No address added yet...</p>
+          </div>
+        );
+      }
+    } else {
+      return null;
     }
   }
 
   useEffect(() => {
+    setIsLoading(true);
     async function getUser() {
-      setIsLoading(true);
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_USER_GET}${session!.user!.id}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
-        const fetchedUser = await res.json();
+      if (session) {
+        const fetchedUser = await getUserById(session.user.id);
 
         if (fetchedUser) {
           setUser(fetchedUser);
@@ -151,9 +148,6 @@ export default function Addresses() {
         } else {
           setMessage("An error occurred when getting user's data.");
         }
-      } catch (err) {
-        setIsLoading(false);
-        console.error(err);
       }
     }
 
@@ -172,9 +166,10 @@ export default function Addresses() {
           <p>Add address</p>
         </button>
       </div>
-      {status === "loading" ? (
-        <div className="w-full grid place-items-center">
+      {status === "loading" || isLoading ? (
+        <div className="w-full grid place-items-center gap-4">
           <LoadingSpinner />
+          <p className="text-gray-300">Loading addressess...</p>
         </div>
       ) : (
         showAddresses()

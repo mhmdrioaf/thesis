@@ -39,8 +39,8 @@ export default async function Marketplace() {
                 </div>
                 <div className="w-full px-2 py-2 lg:px-4 lg:py-4 flex flex-col lg:gap-2">
                   <p className="text-xl">{product.name}</p>
-                  <p className="truncate" title={product?.description}>
-                    {product?.description}
+                  <p className="truncate" title={product?.descriptions}>
+                    {product?.descriptions}
                   </p>
                   <b>{rupiahConverter(product.price)}</b>
                 </div>
