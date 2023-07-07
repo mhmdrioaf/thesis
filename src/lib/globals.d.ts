@@ -37,7 +37,7 @@ type Product = {
   price: number;
   thumbnail: string;
   images?: string[];
-  description: string;
+  descriptions: string;
   user?: User[];
 };
 
