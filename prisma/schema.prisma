@@ -62,6 +62,8 @@ model Product {
   sellerId     String?
   seller       Seller?       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   status       ProductStatus @default(SUBMITTED)
+  createdAt    DateTime      @default(now())
+  approvedAt   DateTime?
 }
 
 model Address {
