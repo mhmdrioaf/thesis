@@ -13,59 +13,104 @@ interface RequestBody {
   birthdate?: Date;
   currentPassword?: string;
   newPassword?: string;
+  storeAddress?: string;
 }
 
 async function handler(request: NextRequest) {
   const body: RequestBody = await request.json();
 
+  const customer = await db.customer.findFirst({ where: { id: body.id } });
+  const seller = await db.seller.findFirst({ where: { id: body.id } });
+
   if (body.currentPassword && body.newPassword) {
-    const currentUser = await db.customer.findFirst({
-      where: {
-        id: body.id,
-      },
-    });
+    if (customer) {
+      if (
+        customer &&
+        (await bcrypt.compare(body.currentPassword, customer.password!))
+      ) {
+        const updateUserPassword = await db.customer.update({
+          where: {
+            id: body.id,
+          },
+          data: {
+            password: await bcrypt.hash(body.newPassword, 10),
+          },
+        });
 
-    if (
-      currentUser &&
-      (await bcrypt.compare(body.currentPassword, currentUser.password!))
-    ) {
-      const updateUserPassword = await db.customer.update({
-        where: {
-          id: body.id,
-        },
-        data: {
-          password: await bcrypt.hash(body.newPassword, 10),
-        },
-      });
+        return NextResponse.json({ ok: true, message: "Password changed!" });
+      } else {
+        return NextResponse.json({
+          ok: false,
+          message: "Current password isn't correct!",
+        });
+      }
+    } else if (seller) {
+      if (
+        seller &&
+        (await bcrypt.compare(body.currentPassword, seller.password!))
+      ) {
+        const updateUserPassword = await db.seller.update({
+          where: {
+            id: body.id,
+          },
+          data: {
+            password: await bcrypt.hash(body.newPassword, 10),
+          },
+        });
 
-      return NextResponse.json({ ok: true, message: "Password changed!" });
-    } else {
-      return NextResponse.json({
-        ok: false,
-        message: "Current password isn't correct!",
-      });
+        return NextResponse.json({ ok: true, message: "Password changed!" });
+      } else {
+        return NextResponse.json({
+          ok: false,
+          message: "Current password isn't correct!",
+        });
+      }
     }
   }
 
   try {
-    const user = await db.customer.update({
-      where: {
-        id: body.id,
-      },
-      data: {
-        name: body.name,
-        imageURL: body.image,
-        username: body.username,
-        email: body.email,
-        dateOfBirth: body.birthdate,
-        phoneNumber: body.phoneNumber,
-      },
-    });
+    if (customer) {
+      const user = await db.customer.update({
+        where: {
+          id: body.id,
+        },
+        data: {
+          name: body.name,
+          imageURL: body.image,
+          username: body.username,
+          email: body.email,
+          dateOfBirth: body.birthdate,
+          phoneNumber: body.phoneNumber,
+        },
+      });
 
-    if (user) {
-      return NextResponse.json({ ok: true });
+      if (user) {
+        return NextResponse.json({ ok: true });
+      } else {
+        return NextResponse.json({ ok: false });
+      }
+    } else if (seller) {
+      const user = await db.seller.update({
+        where: {
+          id: body.id,
+        },
+        data: {
+          email: body.email,
+          imageURL: body.image,
+          name: body.name,
+          storeAddress: body.storeAddress,
+          username: body.username,
+          phoneNumber: body.phoneNumber,
+        },
+      });
+
+      if (user) {
+        return NextResponse.json({ ok: true });
+      } else {
+        return NextResponse.json({ ok: false });
+      }
     } else {
-      return NextResponse.json({ ok: false });
+      return NextResponse.json({ ok: false, message: "Unknown error." });
     }
   } catch (error) {
     console.error(error);

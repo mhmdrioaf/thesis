@@ -21,7 +21,7 @@ export default function Button({
   const buttonWidth = fullWidth ? "w-full " : "w-fit ";
   const buttonBaseStyles =
     buttonWidth +
-    "px-2 py-2 rounded-md grid place-items-center bg-opacity-95 hover:bg-opacity-100 disabled:bg-gray-300 disabled:text-gray-500 ";
+    "flex flex-row gap-2 items-center px-2 py-2 rounded-md bg-opacity-95 hover:bg-opacity-100 disabled:bg-gray-300 disabled:text-gray-500 ";
   const buttonVariants = {
     PRIMARY: buttonBaseStyles + "bg-primary text-white",
     SECONDARY: buttonBaseStyles + "bg-neutral-500 text-neutral-50",

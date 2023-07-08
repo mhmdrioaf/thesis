@@ -36,7 +36,9 @@ export default function AddProductForm() {
     const dataValue = event.target.value;
 
     return dataName === "price"
-      ? setNewProduct((prev) => ({ ...prev!, price: Number(dataValue) }))
+      ? setNewProduct((prev) => ({ ...prev!, price: parseInt(dataValue) }))
+      : dataName === "stock"
+      ? setNewProduct((prev) => ({ ...prev!, stock: parseInt(dataValue) }))
       : setNewProduct((prev) => ({ ...prev!, [dataName]: dataValue }));
   }
 

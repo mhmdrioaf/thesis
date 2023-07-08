@@ -35,3 +35,6 @@ export function sortAddress(address: Address) {
     return 0;
   }
 }
+
+export const fetcher = (url: string) =>
+  fetch(url).then((response) => response.json());

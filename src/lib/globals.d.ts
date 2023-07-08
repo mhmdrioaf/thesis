@@ -38,7 +38,8 @@ type Product = {
   thumbnail: string;
   images?: string[];
   descriptions: string;
-  user?: User[];
+  sellerId: string;
+  stock: number;
 };
 
 type NewProduct = {
