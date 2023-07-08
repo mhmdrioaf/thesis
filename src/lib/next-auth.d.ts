@@ -11,6 +11,7 @@ declare module "next-auth/jwt" {
     phoneNumber?: string | null;
     storeAddress?: string | null;
     role: string;
+    token?: string | null;
   }
 }
 
@@ -23,6 +24,7 @@ declare module "next-auth" {
       phoneNumber?: string | null;
       storeAddress?: string | null;
       role: string;
+      token?: string | null;
     };
   }
 }
