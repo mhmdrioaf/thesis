@@ -37,10 +37,7 @@ export function sortAddress(address: Address) {
 }
 
 export function sortProducts(product: Product) {
-  if (
-    product.status === ProductStatus.REJECTED ||
-    product.status === ProductStatus.SUBMITTED
-  ) {
+  if (product.status === "REJECTED" || product.status === "SUBMITTED") {
     return -1;
   } else {
     return 0;
