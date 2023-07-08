@@ -72,7 +72,11 @@ export default function AddProductForm() {
 
       try {
         if (thumbnail) {
-          const fileName = `${session.user.id}/${newProduct?.name}/${newProduct?.name}_${session.user.id}_thumbnail`;
+          const productName = newProduct?.name
+            ?.replace(/ /g, "-")
+            .toLowerCase();
+          const userId = session.user.id;
+          const fileName = `${userId}/${productName}/thumbnail`;
           const { data, error } = await supabase.storage
             .from("products")
             .upload(fileName, thumbnail, {
@@ -118,7 +122,7 @@ export default function AddProductForm() {
 
               if (response.revalidated) {
                 router.push(
-                  ROUTES.MARKETPLACE +
+                  ROUTES.SELLER.DASHBOARD +
                     "?message=Successfully added new products!"
                 );
               } else {
