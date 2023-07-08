@@ -967,7 +967,7 @@ export default function ShowFormModal({
                     fullWidth
                     onClick={() => deleteProduct()}
                   >
-                    Delete {product?.id}
+                    Delete
                   </Button>
                   <Button variants="SECONDARY" fullWidth onClick={hideModal}>
                     Cancel
