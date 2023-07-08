@@ -5,7 +5,11 @@ import { useSession } from "next-auth/react";
 import ModalsContainer from "@/components/container/ModalsContainer";
 import { useState } from "react";
 import Button from "../buttons/Button";
-import { capitalizeFirstWord, phoneNumberConverter } from "@/lib/helper";
+import {
+  capitalizeFirstWord,
+  getFilenameFromURL,
+  phoneNumberConverter,
+} from "@/lib/helper";
 import supabase from "@/lib/supabase";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useSWRConfig } from "swr";
@@ -106,7 +110,6 @@ export default function ShowFormModal({
       try {
         const response = await fetch(process.env.NEXT_PUBLIC_API_USER_DELETE!, {
           method: "POST",
-          // TODO: Add authorization token to protect the api request
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: session.user.id,
@@ -317,30 +320,65 @@ export default function ShowFormModal({
   };
 
   async function deleteUserImage(userId: string) {
-    const { data, error } = await supabase.storage.from("avatars").list(userId);
+    async function deleteUserAvatars() {
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .list(userId);
 
-    if (error) {
-      return Promise.reject({ ok: false, error: error.message });
-    } else {
-      if (data) {
-        const fileToRemove = data.map((file) => `${userId}/${file.name}`);
-        const { error } = await supabase.storage
-          .from("avatars")
-          .remove(fileToRemove);
+      if (error) {
+        return Promise.reject({ ok: false, error: error.message });
+      } else {
+        if (data) {
+          const fileToRemove = data.map((file) => `${userId}/${file.name}`);
+          const { error } = await supabase.storage
+            .from("avatars")
+            .remove(fileToRemove);
 
-        if (error) {
-          return Promise.reject({ ok: false, error: error.message });
+          if (error) {
+            return Promise.reject({ ok: false, error: error.message });
+          } else {
+            return Promise.resolve({ ok: true, error: null });
+          }
         } else {
           return Promise.resolve({ ok: true, error: null });
         }
-      } else {
-        return Promise.resolve({ ok: true, error: null });
       }
     }
+    async function deleteUserProducts() {
+      const { data, error } = await supabase.storage
+        .from("products")
+        .list(userId);
+
+      if (error) {
+        return Promise.reject({ ok: false, error: error.message });
+      } else {
+        if (data) {
+          const fileToRemove = data.map((file) => `${userId}/${file.name}`);
+          const { error } = await supabase.storage
+            .from("products")
+            .remove(fileToRemove);
+
+          if (error) {
+            return Promise.reject({ ok: false, error: error.message });
+          } else {
+            return Promise.resolve({ ok: true, error: null });
+          }
+        } else {
+          return Promise.resolve({ ok: true, error: null });
+        }
+      }
+    }
+
+    if (session?.user.role === "SELLER") {
+      return await deleteUserAvatars().then(
+        async () => await deleteUserProducts()
+      );
+    } else {
+      return await deleteUserAvatars();
+    }
   }
-  async function deleteProductsImage(sellerId: string, productName: string) {
-    const fileName = productName.replace(" ", "-").toLowerCase();
-    const fileToRemove = `${sellerId}/${fileName}/thumbnail`;
+  async function deleteProductsImage(product: Product) {
+    const fileToRemove = getFilenameFromURL(product.thumbnail) + "/thumbnail";
 
     const { error } = await supabase.storage
       .from("products")
@@ -374,7 +412,7 @@ export default function ShowFormModal({
           setIsLoading(false);
           setMessage("An error occurred when deleting the product.");
         } else {
-          await deleteProductsImage(product.sellerId, product.name).then(() => {
+          await deleteProductsImage(product).then(() => {
             setIsLoading(false);
             hideModal();
             update();
