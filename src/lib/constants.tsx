@@ -240,3 +240,22 @@ export const SELLER_PAGE_TABS: Tab[] = [
     element: <QueueListIcon className={menuIconStyles} />,
   },
 ];
+
+export const SELLER_PRODUCT_TAB: Tab[] = [
+  {
+    id: "all-products",
+    name: "All Products",
+  },
+  {
+    id: "submitted-products",
+    name: "Submitted",
+  },
+  {
+    id: "approved-products",
+    name: "Approved",
+  },
+  {
+    id: "rejected-products",
+    name: "Rejected",
+  },
+];
