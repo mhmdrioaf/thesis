@@ -44,5 +44,14 @@ export function sortProducts(product: Product) {
   }
 }
 
+export function getFilenameFromURL(url: string) {
+  const splittedURL = url.split("/");
+  const userId = splittedURL[splittedURL.length - 3];
+  const productName = splittedURL[splittedURL.length - 2];
+  const fileName = userId + "/" + productName;
+
+  return fileName;
+}
+
 export const fetcher = (url: string) =>
   fetch(url).then((response) => response.json());
