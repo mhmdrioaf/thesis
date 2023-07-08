@@ -13,6 +13,7 @@ import AllProducts from "./all-products/AllProducts";
 import { SELLER_PRODUCT_TAB as tabs } from "@/lib/constants";
 import Button from "@/components/buttons/Button";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import ConditionalProducts from "./conditional-products/ConditionalProducts";
 
 export default function ProductsList() {
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
@@ -62,11 +63,41 @@ export default function ProductsList() {
           />
         );
       case "submitted-products":
-        return "Submitted";
+        return (
+          <ConditionalProducts
+            deleteProduct={deleteProduct}
+            editProduct={editProduct}
+            products={products}
+            styles={{
+              stockStyle: { safe: safeStockStyle, small: smallStockStyle },
+            }}
+            status="SUBMITTED"
+          />
+        );
       case "approved-products":
-        return "Approved";
+        return (
+          <ConditionalProducts
+            deleteProduct={deleteProduct}
+            editProduct={editProduct}
+            products={products}
+            styles={{
+              stockStyle: { safe: safeStockStyle, small: smallStockStyle },
+            }}
+            status="APPROVED"
+          />
+        );
       case "rejected-products":
-        return "rejected";
+        return (
+          <ConditionalProducts
+            deleteProduct={deleteProduct}
+            editProduct={editProduct}
+            products={products}
+            styles={{
+              stockStyle: { safe: safeStockStyle, small: smallStockStyle },
+            }}
+            status="REJECTED"
+          />
+        );
       default:
         return (
           <AllProducts
@@ -110,11 +141,11 @@ export default function ProductsList() {
     }
 
     return (
-      <div className="w-full flex flex-col gap-8">
+      <div className="w-full flex flex-col gap-8 overflow-hidden">
         {message && <Snackbar variant="ERROR" message={message} />}
         {success && <Snackbar variant="SUCCESS" message={success} />}
 
-        <div className="w-full flex flex-row gap-4 justify-between border-b border-b-gray-300 py-2">
+        <div className="flex flex-row justify-between gap-4 overflow-x-auto">
           {tabs.map((tab: Tab) => (
             <div
               key={tab.id}
@@ -135,7 +166,7 @@ export default function ProductsList() {
           </Link>
         </div>
 
-        <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-4">
+        <div className="w-full flex flex-col gap-8">
           {showProducts(productsShown, products)}
         </div>
 
