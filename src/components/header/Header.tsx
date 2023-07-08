@@ -85,8 +85,6 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
 
     window.addEventListener("scroll", handleScroll);
 
-    console.log(session?.user.role);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -250,7 +248,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
                       </Button>
                     ),
                   },
-                ].concat(HEADER_MENU_TABS)
+                ].concat(roleValidation(session.user.role))
               : marketplaceTabs
             : status === "authenticated"
             ? homeTabs.filter(

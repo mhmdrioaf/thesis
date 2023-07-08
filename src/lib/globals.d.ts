@@ -40,7 +40,14 @@ type Product = {
   descriptions: string;
   sellerId: string;
   stock: number;
+  status?: ProductStatus;
 };
+
+enum ProductStatus {
+  SUBMITTED = "SUBMITTED",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
 
 type NewProduct = {
   name: string;

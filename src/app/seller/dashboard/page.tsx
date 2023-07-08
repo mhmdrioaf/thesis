@@ -5,6 +5,7 @@ import SellerProfile from "@/components/seller/Profile";
 import ProductsList from "@/components/seller/products/Products";
 import Snackbar from "@/components/snackbars/Snackbar";
 import ShowFormModal from "@/components/utils/ShowFormModal";
+import ShowMessage from "@/components/utils/ShowMessage";
 import { SELLER_PAGE_TABS as tabs } from "@/lib/constants";
 import { useState } from "react";
 
@@ -33,10 +34,11 @@ export default function SellerDashboard() {
 
   return (
     <Container>
+      <ShowMessage />
       {message && <Snackbar variant="ERROR" message={message} />}
       {success && <Snackbar variant="SUCCESS" message={success} />}
-      <div className="w-full flex flex-col lg:flex-row gap-8">
-        <div className="h-fit flex flex-row lg:flex-col gap-4 border border-gray-300 rounded-md px-4 py-4 flex-shrink-0">
+      <div className="w-full flex flex-col lg:flex-row gap-8 overflow-hidden">
+        <div className="h-fit flex flex-row lg:flex-col gap-4 border border-gray-300 rounded-md px-4 py-4 flex-shrink-0 overflow-x-auto">
           {tabs.map((tab: Tab) => (
             <div
               key={tab.id}
