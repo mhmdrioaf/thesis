@@ -8,6 +8,7 @@ import Button from "../buttons/Button";
 import { capitalizeFirstWord, phoneNumberConverter } from "@/lib/helper";
 import supabase from "@/lib/supabase";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { useSWRConfig } from "swr";
 
 export type Inputs = {
   personalDetails: {
@@ -29,6 +30,13 @@ export type Inputs = {
     };
     PIN: number;
   };
+  product: {
+    name: string;
+    price: number;
+    stock: number;
+    descriptions: string;
+    thumbnail: string;
+  };
 };
 
 interface ComponentsProps {
@@ -37,6 +45,7 @@ interface ComponentsProps {
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
   setSuccess?: React.Dispatch<React.SetStateAction<string | null>>;
   formData?: Address | null | undefined;
+  product?: Product | null | undefined;
 }
 
 export default function ShowFormModal({
@@ -45,14 +54,18 @@ export default function ShowFormModal({
   setMessage,
   formData,
   setSuccess,
+  product,
 }: ComponentsProps) {
   const { handleSubmit, register, reset, watch } = useForm<Inputs>({
     mode: "onChange",
   });
   const { data: session, update } = useSession();
+  const { mutate } = useSWRConfig();
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const inputStyles = "px-2 py-2 border border-gray-300 rounded-md";
 
   const onUserDetailsUpdate: SubmitHandler<Inputs> = async (data) => {
     setMessage(null);
@@ -266,6 +279,51 @@ export default function ShowFormModal({
     }
   };
 
+  const onProductUpdate: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true);
+    setMessage(null);
+    if (setSuccess) {
+      setSuccess(null);
+    }
+    const dataToSubmit = data.product;
+
+    try {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_PRODUCT_UPDATE!, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product?.id, ...dataToSubmit }),
+      });
+
+      const response = await res.json();
+
+      if (!response.ok) {
+        setIsLoading(false);
+        setMessage(response.message);
+      } else {
+        const revalidate = await fetch(
+          process.env.NEXT_PUBLIC_API_REVALIDATE! + "?tag=products"
+        );
+        const revalidateResponse = await revalidate.json();
+
+        if (revalidateResponse.revalidated) {
+          if (setSuccess) {
+            setSuccess("The product updated succesfully.");
+          }
+          hideModal();
+          update();
+          mutate(
+            process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
+              product?.sellerId
+          );
+        } else {
+          setMessage("An error occurred when revalidating the data.");
+        }
+      }
+    } catch (err) {
+      setMessage("An error occurred when updating the product.");
+    }
+  };
+
   async function deleteUserImage(userId: string) {
     const { data, error } = await supabase.storage.from("avatars").list(userId);
 
@@ -285,6 +343,44 @@ export default function ShowFormModal({
         }
       } else {
         return Promise.resolve({ ok: true, error: null });
+      }
+    }
+  }
+  async function deleteProduct() {
+    setIsLoading(true);
+    setMessage(null);
+    if (setSuccess) {
+      setSuccess(null);
+    }
+    console.log(product?.id);
+    if (product) {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PRODUCT_DELETE!}/${product.id}`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const response = await res.json();
+        if (!response.ok) {
+          setIsLoading(false);
+          setMessage("An error occurred when deleting the product.");
+        } else {
+          setIsLoading(false);
+          if (setSuccess) {
+            setSuccess("The product was deleted successfully");
+          }
+          hideModal();
+          update();
+          mutate(
+            process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
+              product.sellerId
+          );
+        }
+      } catch (err) {
+        setIsLoading(false);
+        console.error(err);
       }
     }
   }
@@ -750,6 +846,111 @@ export default function ShowFormModal({
                 Save
               </Button>
             </form>
+          </ModalsContainer>
+        );
+      }
+
+      case "product-edit": {
+        return (
+          <ModalsContainer
+            title="Edit Product"
+            description="To make the product more appealing, fill out the following fields with precise information."
+            onClose={hideModal}
+          >
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={handleSubmit(onProductUpdate)}
+            >
+              <div className="flex flex-col gap-2">
+                <label htmlFor="product-name">Product name</label>
+                <input
+                  type="text"
+                  id="product-name"
+                  defaultValue={product?.name ?? ""}
+                  {...register("product.name")}
+                  className={inputStyles}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="product-descriptions">
+                  Product descriptions
+                </label>
+                <textarea
+                  id="product-descriptions"
+                  rows={2}
+                  defaultValue={product?.descriptions ?? ""}
+                  {...register("product.descriptions")}
+                  className={inputStyles}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="product-price">Product price</label>
+                <input
+                  type="number"
+                  id="product-price"
+                  defaultValue={product?.price ?? ""}
+                  className={inputStyles}
+                  {...register("product.price", {
+                    setValueAs: (v) => parseInt(v),
+                  })}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="product-stock">Product stock</label>
+                <input
+                  type="number"
+                  id="product-stock"
+                  defaultValue={product?.stock ?? ""}
+                  className={inputStyles}
+                  {...register("product.stock", {
+                    setValueAs: (v) => parseInt(v),
+                  })}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variants="PRIMARY"
+                fullWidth
+                disabled={isLoading}
+              >
+                {isLoading ? "Saving..." : "Save"}
+              </Button>
+            </form>
+          </ModalsContainer>
+        );
+      }
+      case "product-delete": {
+        return (
+          <ModalsContainer
+            onClose={hideModal}
+            title="Delete product"
+            description="Are you sure want to delete this product?"
+          >
+            <div className="w-full flex flex-row gap-4">
+              {!isLoading && (
+                <>
+                  <Button
+                    variants="ERROR"
+                    fullWidth
+                    onClick={() => deleteProduct()}
+                  >
+                    Delete {product?.id}
+                  </Button>
+                  <Button variants="SECONDARY" fullWidth onClick={hideModal}>
+                    Cancel
+                  </Button>
+                </>
+              )}
+              {isLoading && (
+                <Button disabled fullWidth>
+                  Deleting...
+                </Button>
+              )}
+            </div>
           </ModalsContainer>
         );
       }
