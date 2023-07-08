@@ -328,7 +328,7 @@ export default function ShowFormModal({
     const { data, error } = await supabase.storage.from("avatars").list(userId);
 
     if (error) {
-      return Promise.reject({ ok: false, erorr: error.message });
+      return Promise.reject({ ok: false, error: error.message });
     } else {
       if (data) {
         const fileToRemove = data.map((file) => `${userId}/${file.name}`);
@@ -346,13 +346,28 @@ export default function ShowFormModal({
       }
     }
   }
+  async function deleteProductsImage(sellerId: string, productName: string) {
+    const fileName = productName.replace(" ", "-").toLowerCase();
+    const fileToRemove = `${sellerId}/${fileName}/thumbnail`;
+
+    const { error } = await supabase.storage
+      .from("products")
+      .remove([fileToRemove]);
+
+    if (error) {
+      return Promise.reject({ ok: false, error: error.message });
+    } else {
+      return Promise.resolve({ ok: true, error: null });
+    }
+  }
+
   async function deleteProduct() {
     setIsLoading(true);
     setMessage(null);
     if (setSuccess) {
       setSuccess(null);
     }
-    console.log(product?.id);
+
     if (product) {
       try {
         const res = await fetch(
@@ -367,16 +382,30 @@ export default function ShowFormModal({
           setIsLoading(false);
           setMessage("An error occurred when deleting the product.");
         } else {
-          setIsLoading(false);
-          if (setSuccess) {
-            setSuccess("The product was deleted successfully");
-          }
-          hideModal();
-          update();
-          mutate(
-            process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
-              product.sellerId
+          const revalidate = await fetch(
+            process.env.NEXT_PUBLIC_API_REVALIDATE! + "?tag=products"
           );
+          const response = await revalidate.json();
+
+          if (response.revalidated) {
+            await deleteProductsImage(product.sellerId, product.name).then(
+              () => {
+                setIsLoading(false);
+                hideModal();
+                update();
+                mutate(
+                  process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
+                    product?.sellerId
+                );
+                if (setSuccess) {
+                  setSuccess("The product deleted succesfully.");
+                }
+              }
+            );
+          } else {
+            setIsLoading(false);
+            setMessage("An error occurred when revalidating the data.");
+          }
         }
       } catch (err) {
         setIsLoading(false);
