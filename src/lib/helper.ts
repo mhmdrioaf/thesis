@@ -36,5 +36,16 @@ export function sortAddress(address: Address) {
   }
 }
 
+export function sortProducts(product: Product) {
+  if (
+    product.status === ProductStatus.REJECTED ||
+    product.status === ProductStatus.SUBMITTED
+  ) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
 export const fetcher = (url: string) =>
   fetch(url).then((response) => response.json());
