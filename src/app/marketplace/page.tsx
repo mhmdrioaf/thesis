@@ -1,32 +1,33 @@
+"use client";
+
 import Card from "@/components/card/Card";
 import Carousel from "@/components/carousel/Carousel";
 import Container from "@/components/container/Container";
+import LoadingSpinner from "@/components/indicators/LoadingSpinner";
 import SectionTitle from "@/components/section-title/SectionTitle";
 import ShowMessage from "@/components/utils/ShowMessage";
-import { getProducts } from "@/lib/api";
 import {
   ROUTES,
   DUMMY_MARKETPLACE_CAROUSEL_ASSETS as dummyAssets,
 } from "@/lib/constants";
-import { rupiahConverter } from "@/lib/helper";
+import { fetcher, rupiahConverter } from "@/lib/helper";
 import Image from "next/image";
 import Link from "next/link";
+import useSWR from "swr";
 
-export default async function Marketplace() {
-  const products: Product[] = await getProducts();
+export default function Marketplace() {
+  const { data, isLoading, isValidating, error } = useSWR(
+    "/api/list-products",
+    fetcher
+  );
 
-  return (
-    <Container className="w-full min-h-screen flex flex-col gap-8">
-      <ShowMessage />
-      <Carousel
-        className="w-full h-64 rounded-2xl overflow-hidden"
-        assets={dummyAssets}
-        autoplay={false}
-      />
-      <SectionTitle title="Featured Products" />
-      <div className="grid grid-cols-2 lg:grid-cols-4 w-full items-center gap-2 lg:gap-8">
-        {products &&
-          products.map((product: Product) => (
+  function showProducts() {
+    if (data) {
+      const products = JSON.parse(data.products);
+
+      return (
+        <>
+          {products.map((product: Product) => (
             <Link key={product.id} href={ROUTES.PRODUCT_DETAIL(product.id)}>
               <Card>
                 <div className="w-full h-32 lg:h-64 relative rounded-b-lg overflow-hidden">
@@ -47,13 +48,36 @@ export default async function Marketplace() {
               </Card>
             </Link>
           ))}
+        </>
+      );
+    } else if (isLoading || isValidating) {
+      return (
+        <div className="w-full grid place-items-center">
+          <LoadingSpinner />
+        </div>
+      );
+    } else if (error) {
+      return (
+        <div className="w-full grid place-items-center">
+          An error occurred while getting products...
+        </div>
+      );
+    } else {
+      return "Currently, no products are listed.";
+    }
+  }
 
-        {!products ||
-          (products.length <= 0 && (
-            <div className="w-full only:grid place-items-center text-gray-300">
-              <p>No products listed yet...</p>
-            </div>
-          ))}
+  return (
+    <Container className="w-full min-h-screen flex flex-col gap-8">
+      <ShowMessage />
+      <Carousel
+        className="w-full h-64 rounded-2xl overflow-hidden"
+        assets={dummyAssets}
+        autoplay={false}
+      />
+      <SectionTitle title="Featured Products" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 w-full items-center gap-2 lg:gap-8">
+        {showProducts()}
       </div>
     </Container>
   );

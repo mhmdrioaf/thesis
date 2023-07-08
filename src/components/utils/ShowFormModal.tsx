@@ -300,24 +300,16 @@ export default function ShowFormModal({
         setIsLoading(false);
         setMessage(response.message);
       } else {
-        const revalidate = await fetch(
-          process.env.NEXT_PUBLIC_API_REVALIDATE! + "?tag=products"
-        );
-        const revalidateResponse = await revalidate.json();
-
-        if (revalidateResponse.revalidated) {
-          if (setSuccess) {
-            setSuccess("The product updated succesfully.");
-          }
-          hideModal();
-          update();
-          mutate(
-            process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
-              product?.sellerId
-          );
-        } else {
-          setMessage("An error occurred when revalidating the data.");
+        if (setSuccess) {
+          setSuccess("The product updated succesfully.");
         }
+        hideModal();
+        update();
+        mutate(
+          process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
+            product?.sellerId
+        );
+        mutate(process.env.NEXT_PUBLIC_API_PRODUCT_LIST_PRODUCTS);
       }
     } catch (err) {
       setMessage("An error occurred when updating the product.");
@@ -382,30 +374,19 @@ export default function ShowFormModal({
           setIsLoading(false);
           setMessage("An error occurred when deleting the product.");
         } else {
-          const revalidate = await fetch(
-            process.env.NEXT_PUBLIC_API_REVALIDATE! + "?tag=products"
-          );
-          const response = await revalidate.json();
-
-          if (response.revalidated) {
-            await deleteProductsImage(product.sellerId, product.name).then(
-              () => {
-                setIsLoading(false);
-                hideModal();
-                update();
-                mutate(
-                  process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
-                    product?.sellerId
-                );
-                if (setSuccess) {
-                  setSuccess("The product deleted succesfully.");
-                }
-              }
-            );
-          } else {
+          await deleteProductsImage(product.sellerId, product.name).then(() => {
             setIsLoading(false);
-            setMessage("An error occurred when revalidating the data.");
-          }
+            hideModal();
+            update();
+            mutate(
+              process.env.NEXT_PUBLIC_API_PRODUCT_LIST_SELLER_PRODUCTS! +
+                product?.sellerId
+            );
+            mutate(process.env.NEXT_PUBLIC_API_PRODUCT_LIST_PRODUCTS);
+            if (setSuccess) {
+              setSuccess("The product deleted succesfully.");
+            }
+          });
         }
       } catch (err) {
         setIsLoading(false);

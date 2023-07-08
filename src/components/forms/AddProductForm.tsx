@@ -10,12 +10,15 @@ import React, { useEffect, useRef, useState } from "react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
 import TextField from "../inputs/TextField";
 import Button from "../buttons/Button";
+import { useSWRConfig } from "swr";
 
 export default function AddProductForm() {
   const [newProduct, setNewProduct] = useState<NewProduct | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { mutate } = useSWRConfig();
 
   const labelStyles = "text-neutral-500";
   const inputStyles = "flex flex-col gap-2";
@@ -114,23 +117,11 @@ export default function AddProductForm() {
                 productResponse.status
               );
             } else {
-              const revalidate = await fetch(
-                process.env.NEXT_PUBLIC_API_REVALIDATE! + "?tag=products"
+              mutate(process.env.NEXT_PUBLIC_API_PRODUCT_LIST_PRODUCTS);
+              router.push(
+                ROUTES.SELLER.DASHBOARD +
+                  "?message=Successfully added new products!"
               );
-
-              const response = await revalidate.json();
-
-              if (response.revalidated) {
-                router.push(
-                  ROUTES.SELLER.DASHBOARD +
-                    "?message=Successfully added new products!"
-                );
-              } else {
-                console.error(
-                  "An error occurred when revalidating data: ",
-                  response
-                );
-              }
             }
           }
         }
