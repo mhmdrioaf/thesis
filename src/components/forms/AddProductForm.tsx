@@ -78,6 +78,7 @@ export default function AddProductForm() {
           const productName = newProduct?.name
             ?.replace(/ /g, "-")
             .toLowerCase();
+
           const userId = session.user.id;
           const fileName = `${userId}/${productName}/thumbnail`;
           const { data, error } = await supabase.storage
@@ -101,20 +102,25 @@ export default function AddProductForm() {
               thumbnail: thumbnailURL,
             };
 
-            const productResponse = await fetch(
+            const res = await fetch(
               process.env.NEXT_PUBLIC_API_PRODUCT_CREATE!,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(productToSubmit),
+                body: JSON.stringify({
+                  token: session.user.token ?? "",
+                  ...productToSubmit,
+                }),
               }
             );
+
+            const productResponse = await res.json();
 
             if (!productResponse.ok) {
               setIsLoading(false);
               console.error(
                 "A problem occurred during uploading the product: ",
-                productResponse.status
+                productResponse.error.code
               );
             } else {
               mutate(process.env.NEXT_PUBLIC_API_PRODUCT_LIST_PRODUCTS);
