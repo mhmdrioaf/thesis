@@ -53,6 +53,16 @@ enum ProductStatus {
   REJECTED = "REJECTED",
 }
 
+enum OrderStatus {
+  PENDING = "PENDING",
+  ONHOLD = "ONHOLD",
+  PAID = "PAID",
+  PACKED = "PACKED",
+  SHIPPED = "SHIPPED",
+  CLOSED = "CLOSED",
+  FAILED = "FAILED",
+}
+
 type NewProduct = {
   name: string;
   description: string;
@@ -76,4 +86,24 @@ type Address = {
   receiverPhoneNumber: string;
   receiverId: string;
   primaryAddressFor?: string;
+};
+
+type Customer = {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+  addresses: Address[];
+  phoneNumber?: string;
+};
+
+type CustomerOrder = {
+  id: string;
+  shippingAddress: string;
+  customerId: string;
+  dateOfOrder: Date;
+  status: OrderStatus;
+  totalPrice: number;
+  va?: string | null;
 };

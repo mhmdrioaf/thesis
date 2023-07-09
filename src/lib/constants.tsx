@@ -246,6 +246,10 @@ export const PROFILE_PAGE_TABS: Tab[] = [
     id: "addresses",
     name: "Addresses",
   },
+  {
+    id: "orders",
+    name: "Orders",
+  },
 ];
 
 export const SELLER_PAGE_TABS: Tab[] = [
