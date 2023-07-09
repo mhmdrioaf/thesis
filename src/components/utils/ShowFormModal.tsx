@@ -142,7 +142,11 @@ export default function ShowFormModal({
   };
 
   const onAddressSubmit: SubmitHandler<Inputs> = async (data) => {
+    setMessage(null);
     setIsLoading(true);
+    if (setSuccess) {
+      setSuccess(null);
+    }
     try {
       if (session) {
         const { receiverId, ...dataToSubmit } = data.addressDetails.address;
@@ -166,6 +170,12 @@ export default function ShowFormModal({
           hideModal();
           setIsLoading(false);
           update();
+          mutate("/api/get-user-primary-address" + `/${session?.user.id}`);
+          if (setSuccess) {
+            setSuccess(
+              "The address has been successfully added; retry your order."
+            );
+          }
         }
       }
     } catch (err) {
@@ -442,7 +452,7 @@ export default function ShowFormModal({
 
     if (product) {
       try {
-        const res = await fetch("http://localhost:3000/api/product-actions", {
+        const res = await fetch(process.env.NEXT_PUBLIC_API_PRODUCT_ACTIONS!, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
