@@ -3,6 +3,7 @@
 import Container from "@/components/container/Container";
 import Addresses from "@/components/forms/user/addresses/Addresses";
 import PersonalInfo from "@/components/forms/user/personal-info/PersonalInfo";
+import OrdersList from "@/components/user/orders/OrdersList";
 import { PROFILE_PAGE_TABS } from "@/lib/constants";
 import { useState } from "react";
 
@@ -27,6 +28,9 @@ export default function UserProfile() {
 
       case "addresses":
         return <Addresses />;
+
+      case "orders":
+        return <OrdersList />;
 
       default:
         return (
