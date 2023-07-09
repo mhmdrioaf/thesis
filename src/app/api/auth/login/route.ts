@@ -36,6 +36,19 @@ const handler = async (request: NextRequest) => {
     },
   });
 
+  const administrator = await db.administrator.findFirst({
+    where: {
+      OR: [
+        {
+          email: body.username,
+        },
+        {
+          username: body.username,
+        },
+      ],
+    },
+  });
+
   if (customer && (await bcrypt.compare(body.password, customer.password!))) {
     const { password, ...result } = customer;
     return new NextResponse(
@@ -45,6 +58,16 @@ const handler = async (request: NextRequest) => {
     );
   } else if (seller && (await bcrypt.compare(body.password, seller.password))) {
     const { password, ...result } = seller;
+    return new NextResponse(
+      JSON.stringify(result, (_, v) =>
+        typeof v === "bigint" ? v.toString() : v
+      )
+    );
+  } else if (
+    administrator &&
+    (await bcrypt.compare(body.password, administrator.password))
+  ) {
+    const { password, ...result } = administrator;
     return new NextResponse(
       JSON.stringify(result, (_, v) =>
         typeof v === "bigint" ? v.toString() : v
