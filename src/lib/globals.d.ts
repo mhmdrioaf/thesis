@@ -43,6 +43,7 @@ type Product = {
   status?: ProductStatus;
   createdAt: Date;
   approvedAt?: Date;
+  isFeatured: Boolean;
 };
 
 enum ProductStatus {

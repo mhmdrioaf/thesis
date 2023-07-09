@@ -53,5 +53,38 @@ export function getFilenameFromURL(url: string) {
   return fileName;
 }
 
+export function getFeaturedProducts(products: Product[]) {
+  const featuredProducts = products.filter(
+    (product: Product) => product.isFeatured === true
+  );
+
+  return featuredProducts;
+}
+
+export function getApprovedProducts(products: Product[]) {
+  const approvedProducts = products.filter(
+    (product: Product) => product.status === "APPROVED"
+  );
+
+  return approvedProducts;
+}
+
+export function getNewestProducts(products: Product[]) {
+  const currentDate = new Date();
+  const newestProducts = products.map((product: Product) => {
+    const productCreatedDate = new Date(product.createdAt);
+    const diffInTime = currentDate.getTime() - productCreatedDate.getTime();
+    const diffInDays = diffInTime / (1000 * 3600 * 24);
+
+    if (diffInDays < 7) {
+      return product;
+    } else {
+      return null as unknown as Product;
+    }
+  });
+
+  return newestProducts;
+}
+
 export const fetcher = (url: string) =>
   fetch(url).then((response) => response.json());
