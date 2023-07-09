@@ -433,6 +433,45 @@ export default function ShowFormModal({
     }
   }
 
+  async function productActions(actions: string) {
+    setIsLoading(true);
+    setMessage(null);
+    if (setSuccess) {
+      setSuccess(null);
+    }
+
+    if (product) {
+      try {
+        const res = await fetch("http://localhost:3000/api/product-actions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            product: product,
+            token: session?.user.token,
+            actions: actions,
+          }),
+        });
+        const response = await res.json();
+        if (!response.ok) {
+          setIsLoading(false);
+          setMessage("An error occurred when doing this actions...");
+        } else {
+          setIsLoading(false);
+          hideModal();
+          update();
+          mutate("/api/list-seller-products/" + product?.sellerId);
+          mutate("/api/list-products");
+          if (setSuccess) {
+            setSuccess(`The product has been ${actions}ed succesfully`);
+          }
+        }
+      } catch (err) {
+        setIsLoading(false);
+        console.error(err);
+      }
+    }
+  }
+
   function hideModal() {
     onClose();
     reset();
@@ -996,6 +1035,68 @@ export default function ShowFormModal({
               {isLoading && (
                 <Button disabled fullWidth>
                   Deleting...
+                </Button>
+              )}
+            </div>
+          </ModalsContainer>
+        );
+      }
+      case "product-approve": {
+        return (
+          <ModalsContainer
+            onClose={hideModal}
+            title="Approve Product"
+            description="Are you sure want to approve this product?"
+          >
+            <div className="w-full flex flex-row gap-4">
+              {!isLoading && (
+                <>
+                  <Button
+                    variants="PRIMARY"
+                    fullWidth
+                    onClick={() => productActions("approve")}
+                  >
+                    Approve
+                  </Button>
+                  <Button variants="SECONDARY" fullWidth onClick={hideModal}>
+                    Cancel
+                  </Button>
+                </>
+              )}
+              {isLoading && (
+                <Button disabled fullWidth>
+                  Approving...
+                </Button>
+              )}
+            </div>
+          </ModalsContainer>
+        );
+      }
+      case "product-reject": {
+        return (
+          <ModalsContainer
+            onClose={hideModal}
+            title="Reject Product"
+            description="Are you sure want to reject this product?"
+          >
+            <div className="w-full flex flex-row gap-4">
+              {!isLoading && (
+                <>
+                  <Button
+                    variants="ERROR"
+                    fullWidth
+                    onClick={() => productActions("reject")}
+                  >
+                    Reject
+                  </Button>
+                  <Button variants="SECONDARY" fullWidth onClick={hideModal}>
+                    Cancel
+                  </Button>
+                </>
+              )}
+              {isLoading && (
+                <Button disabled fullWidth>
+                  Rejecting...
                 </Button>
               )}
             </div>
