@@ -64,6 +64,7 @@ model Product {
   status       ProductStatus @default(SUBMITTED)
   createdAt    DateTime      @default(now())
   approvedAt   DateTime?
+  isFeatured   Boolean       @default(false)
 }
 
 model Address {
