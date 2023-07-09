@@ -88,26 +88,28 @@ model CustomerOrder {
   totalPrice      Int
   orderItem       OrderItem[]
   seller          SellerOrder?
+  va              String?
 }
 
 model OrderItem {
-  orderItemID String        @id @default(cuid())
-  productID   String        @unique
+  orderItemID String         @id @default(cuid())
+  productID   Int            @unique
   quantity    Int
-  order       CustomerOrder @relation(fields: [orderID], references: [id])
-  orderID     String
+  order       CustomerOrder? @relation(fields: [orderID], references: [id])
+  orderID     String?
+  totalPrice  Int
 }
 
 model SellerOrder {
   id              String         @id @default(cuid())
   dateOfOrder     DateTime       @default(now())
   seller          Seller         @relation(fields: [sellerID], references: [id])
-  customer        Customer       @relation(fields: [customerID], references: [id])
   order           CustomerOrder? @relation(fields: [customerOrderID], references: [id])
   sellerID        String
-  customerID      String         @unique
   customerOrderID String         @unique
   status          OrderStatus    @default(PENDING)
+  Customer        Customer?      @relation(fields: [customerId], references: [id])
+  customerId      String?
 }
 
 enum ProductStatus {
