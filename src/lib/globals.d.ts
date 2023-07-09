@@ -41,6 +41,8 @@ type Product = {
   sellerId: string;
   stock: number;
   status?: ProductStatus;
+  createdAt: Date;
+  approvedAt?: Date;
 };
 
 enum ProductStatus {

@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
         session.user.phoneNumber = token.phoneNumber;
         session.user.role = token.role;
         session.user.storeAddress = token.storeAddress;
+        session.user.token = token.token;
       }
 
       return session;
@@ -85,6 +86,7 @@ export const authOptions: NextAuthOptions = {
           username: seller.username,
           storeAddress: seller.storeAddress,
           role: "SELLER",
+          token: seller.token,
         };
       } else if (administrator) {
         return {
@@ -94,6 +96,7 @@ export const authOptions: NextAuthOptions = {
           picture: administrator.imageURL,
           username: administrator.username,
           role: "ADMINISTRATOR",
+          token: administrator.token,
         };
       } else {
         token.id = user!.id;
