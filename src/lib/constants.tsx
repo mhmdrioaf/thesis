@@ -114,6 +114,9 @@ export const ROUTES = {
   SELLER: {
     DASHBOARD: "/seller/dashboard",
   },
+  ADMINISTRATOR: {
+    DASHBOARD: "/admin/dashboard",
+  },
   PRODUCT_DETAIL: (productId: string | number) => `/product/${productId}`,
 
   USER: {
@@ -212,6 +215,28 @@ export const HEADER_MENU_SELLER_TABS: Tab[] = [
   },
 ];
 
+export const HEADER_MENU_ADMIN_TABS: Tab[] = [
+  {
+    id: "dashboard",
+    route: ROUTES.ADMINISTRATOR.DASHBOARD,
+    name: "Dashboard",
+    element: <BuildingStorefrontIcon className={menuIconStyles} />,
+  },
+  {
+    id: "logout",
+    name: "Log out",
+    element: (
+      <div
+        key="logout button"
+        className="w-full px-4 flex flex-row gap-2 items-center text-gray-500 hover:underline"
+      >
+        <ArrowRightOnRectangleIcon className="w-4 h-4" />
+        <p className="text-500">Log out</p>
+      </div>
+    ),
+  },
+];
+
 export const PROFILE_PAGE_TABS: Tab[] = [
   {
     id: "bio",
@@ -257,5 +282,23 @@ export const SELLER_PRODUCT_TAB: Tab[] = [
   {
     id: "rejected-products",
     name: "Rejected",
+  },
+];
+
+export const ADMIN_PAGE_TABS: Tab[] = [
+  {
+    id: "dashboard",
+    name: "Dashboard",
+    element: <NewspaperIcon className={menuIconStyles} />,
+  },
+  {
+    id: "products",
+    name: "Products",
+    element: <InboxStackIcon className={menuIconStyles} />,
+  },
+  {
+    id: "seller",
+    name: "Sellers",
+    element: <UserIcon className={menuIconStyles} />,
   },
 ];

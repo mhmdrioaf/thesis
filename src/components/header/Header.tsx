@@ -11,6 +11,7 @@ import NavLink from "../navs/NavLink";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "../indicators/LoadingSpinner";
 import {
+  HEADER_MENU_ADMIN_TABS,
   HEADER_MENU_GUEST_TABS,
   HEADER_MENU_SELLER_TABS,
   HEADER_MENU_TABS,
@@ -69,7 +70,7 @@ export default function Header({ homeTabs, marketplaceTabs }: Props) {
         case "SELLER":
           return HEADER_MENU_SELLER_TABS;
         case "ADMINISTRATOR":
-          return HEADER_MENU_SELLER_TABS;
+          return HEADER_MENU_ADMIN_TABS;
         default:
           return [];
       }

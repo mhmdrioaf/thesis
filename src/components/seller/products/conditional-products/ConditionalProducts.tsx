@@ -15,7 +15,7 @@ interface Props {
   status: string;
 }
 
-export default function SubmittedProducts({
+export default function ConditionalProducts({
   products,
   editProduct,
   deleteProduct,
