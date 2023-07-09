@@ -1,6 +1,10 @@
 "use client";
 
 import Container from "@/components/container/Container";
+import DashboardContainer, {
+  DashboardLeftRow,
+  DashboardRightRow,
+} from "@/components/container/DashboardContainer";
 import SellerProfile from "@/components/seller/Profile";
 import ProductsList from "@/components/seller/products/Products";
 import Snackbar from "@/components/snackbars/Snackbar";
@@ -37,8 +41,8 @@ export default function SellerDashboard() {
       <ShowMessage />
       {message && <Snackbar variant="ERROR" message={message} />}
       {success && <Snackbar variant="SUCCESS" message={success} />}
-      <div className="w-full flex flex-col lg:flex-row gap-8 overflow-hidden">
-        <div className="h-fit flex flex-row lg:flex-col gap-4 border border-gray-300 rounded-md px-4 py-4 flex-shrink-0 overflow-x-auto">
+      <DashboardContainer>
+        <DashboardLeftRow>
           {tabs.map((tab: Tab) => (
             <div
               key={tab.id}
@@ -49,11 +53,9 @@ export default function SellerDashboard() {
               <p>{tab.name}</p>
             </div>
           ))}
-        </div>
-        <div className="w-full flex flex-col gap-4 border border-gray-300 rounded-md px-4 py-4">
-          {showActivePage(activePage)}
-        </div>
-      </div>
+        </DashboardLeftRow>
+        <DashboardRightRow>{showActivePage(activePage)}</DashboardRightRow>
+      </DashboardContainer>
       <ShowFormModal
         onClose={() => setModalShown(null)}
         options={modalShown}
